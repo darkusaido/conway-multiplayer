@@ -1,0 +1,27 @@
+{
+  "name": "jorgenonell.me",
+  "version": "0.0.0",
+  "authors": [
+    "Jorge Nonell <jnone001@fiu.edu>"
+  ],
+  "description": "personal/professional info site",
+  "main": "index.html",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "jorgenonell.me",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5",
+    "moment": "~2.10.6",
+    "pixi.js": "~3.0.7"
+  }
+}
