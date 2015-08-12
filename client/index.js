@@ -71,10 +71,18 @@ $(document).ready(function(){
 
     socket.on('running', function(){
         running = true;
+        runButton.attr('disabled', 'disabled');
+        stopButton.removeAttr('disabled');
+        clearButton.attr('disabled', 'disabled');
+        runningText.show();
     });
 
     socket.on('stopping', function(){
         running = false;
+        stopButton.attr('disabled', 'disabled');
+        runButton.removeAttr('disabled');
+        clearButton.removeAttr('disabled');
+        runningText.hide();
     });
 
     socket.on('clear', function(liveCells){

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "start": "node server/app.js",
-    "postinstall": "./node_modules/bower/bin/bower install"
+    "postinstall": "./node_modules/bower/bin/bower install",
+    "nodemon": "nodemon server/app.js"
   },
   "dependencies": {
     "bower": "^1.4.1",
