@@ -4,6 +4,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 
+var port = process.env.PORT || 5000;
+
 app.use(express.static(__dirname+ '/../client'));
 
 app.get('/', function(request, response){
@@ -47,4 +49,4 @@ io.on('connection', function(socket){
 	});
 });
 
-http.listen(80);
+http.listen(port);
