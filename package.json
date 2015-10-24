@@ -4,7 +4,10 @@
   "scripts": {
     "start": "node server/app.js",
     "postinstall": "./node_modules/bower/bin/bower install",
-    "nodemon": "nodemon server/app.js"
+    "nodemon": "nodemon --debug server/app.js",
+    "devBuild": "ttab jasmine-node;ttab node-inspector;npm run nodemon",
+    "coffee": "coffee --watch --output spec/test_js --compile spec/test_coffee",
+    "test-server": "jasmine-node spec --autotest --watch . --growl --coffee"
   },
   "dependencies": {
     "bower": "^1.4.1",
@@ -12,6 +15,9 @@
     "socket.io": "^1.3.6"
   },
   "devDependencies": {
-    "nodemon": "^1.4.0"
+    "jasmine-node": "^1.14.5",
+    "node-inspector": "^0.12.3",
+    "nodemon": "^1.4.0",
+    "ttab": "^0.1.7"
   }
 }

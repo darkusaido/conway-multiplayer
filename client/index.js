@@ -59,10 +59,23 @@ $(document).ready(function(){
         runningText.hide();
     });
 
-    socket.on('join', function(liveCells, isRunning){
+    socket.on('join', function(liveCells, isRunning, generationNumber){
         running = isRunning;
+        $('#generation-number').text(generationNumber);
+        if(running){
+            runButton.attr('disabled', 'disabled');
+            stopButton.removeAttr('disabled');
+            clearButton.attr('disabled', 'disabled');
+            runningText.show();
+        }
+        else{
+            runButton.removeAttr('disabled');
+            stopButton.attr('disabled', 'disabled');
+            clearButton.removeAttr('disabled');
+            runningText.hide();
+        }
         for(cellKey in liveCells){
-            var cell = $('#' + liveCells[cellKey]);
+            var cell = $('#' + liveCells[id]);
             if(!cell.hasClass('live')){
                 cell.addClass('live');
             }
@@ -75,6 +88,23 @@ $(document).ready(function(){
         stopButton.removeAttr('disabled');
         clearButton.attr('disabled', 'disabled');
         runningText.show();
+    });
+
+    socket.on('nextGen', function(generationNumber, cellsBorn, cellsDied){
+        $('#generation-number').text(generationNumber);
+        var uiCell;
+        for(cell in cellsBorn){
+            uiCell = $('#' + cell.id);
+            if(!uiCell.hasClass('live')){
+                uiCell.addClass('live');
+            }
+        }
+        for(cell in cellsDied){
+            uiCell = $('#' + cell.id);
+            if(uiCell.hasClass('live')){
+                uiCell.removeClass('live');
+            }    
+        }
     });
 
     socket.on('stopping', function(){
