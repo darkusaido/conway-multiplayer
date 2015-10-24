@@ -1,9 +1,9 @@
-.navbar{
-	margin-bottom: 0;
-}
-
-#table-container{
-	padding: 0;
+td {
+	width: 20px;
+	min-width: 20px;
+	height: 20px;
+    background-color: #dddddd;
+    border: 3px solid white;
 }
 
 .live{
