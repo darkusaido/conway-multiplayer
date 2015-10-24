@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
-var game = require('./GOL.js')();
+var game = require('./GOL.js');
 
 var port = process.env.PORT || 5003;
 
