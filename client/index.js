@@ -75,7 +75,7 @@ $(document).ready(function(){
             runningText.hide();
         }
         for(cellKey in liveCells){
-            var cell = $('#' + liveCells[id]);
+            var cell = $('#' + liveCells[cellKey].id);
             if(!cell.hasClass('live')){
                 cell.addClass('live');
             }
@@ -116,7 +116,7 @@ $(document).ready(function(){
     });
 
     socket.on('clear', function(liveCells){
-        //surely we could just query for every with the live class and remove that?
+        //surely we could just query for every cell with the live class and remove that though?
         for(cellKey in liveCells){
             var cell = $('#' + liveCells[cellKey].id);
             if(cell.hasClass('live')){
