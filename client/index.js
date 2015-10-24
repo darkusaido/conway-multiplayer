@@ -116,8 +116,9 @@ $(document).ready(function(){
     });
 
     socket.on('clear', function(liveCells){
+        //surely we could just query for every with the live class and remove that?
         for(cellKey in liveCells){
-            var cell = $('#' + liveCells[cellKey]);
+            var cell = $('#' + liveCells[cellKey].id);
             if(cell.hasClass('live')){
                 cell.removeClass('live');
             }
