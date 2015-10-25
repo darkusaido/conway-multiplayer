@@ -18,7 +18,7 @@ var running = false;
 
 io.on('connection', function(socket){
 	console.log('someone connected');
-	socket.emit('join', game.currentGen || liveCells, running, game.generationNumber());
+	socket.emit('join', game.currentGen || liveCells, running, game.getGenerationNumber());
 
 	socket.on('stopping', function(){
 		running = false;

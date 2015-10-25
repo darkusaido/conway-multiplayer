@@ -39,7 +39,7 @@ var currentLiveCells = function(){
 	return globalLiveCells;
 };
 
-var generationNumber = function(){
+var getGenerationNumber = function(){
 	return generationNumber;
 };
 
@@ -213,7 +213,7 @@ module.exports = {
 		'killGame': killGame,
 		'initializeGame': initializeGame,
 		'runGame':runGame,
-		'generationNumber': generationNumber,
+		'getGenerationNumber': getGenerationNumber,
 		'currentLiveCells':currentLiveCells,
 		//test functions
 		'updateNeighborCount': updateNeighborCount,
