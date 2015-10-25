@@ -1,6 +1,6 @@
 var cellCreator = require('./cell.js');
 var interval;
-var ticksPerSecond = 2;
+var ticksPerSecond = 60;
 var generationNumber = 0;
 var maxRow = 0;
 var maxCol = 0;
@@ -26,6 +26,7 @@ var runGame = function(io){
 	var currentEnvironment = globalCurrentEnvironment;
 	countNeighbors(liveCells, currentEnvironment);
 	var game = function(){
+		debugger;
 		var nextGeneration = nextGen(currentEnvironment, liveCells);
 		io.sockets.emit('nextGen', ++generationNumber, nextGeneration.cellsBorn, nextGeneration.cellsDied);
 		console.log('generation: #%d', generationNumber);
@@ -33,7 +34,7 @@ var runGame = function(io){
 		globalCurrentEnvironment = currentEnvironment;
 		globalLiveCells = nextGeneration.liveCells;
 	};
-	interval = setInterval(game, 1000/ticksPerSecond);
+	interval = setInterval(game, 3000/*1000/ticksPerSecond*/);
 };
 
 var currentLiveCells = function(){
@@ -47,6 +48,8 @@ var getGenerationNumber = function(){
 var resetGame = function(){
 	console.log('reseting generation number')
 	generationNumber = 0;
+	globalLiveCells = {};
+	globalCurrentEnvironment = {};
 }
 
 var changeGridSize = function(rows, cols){
@@ -55,9 +58,11 @@ var changeGridSize = function(rows, cols){
 }
 
 var nextGen = function(currentEnvironment, liveCells){
+	//debugger;
 	var cellsBorn = cellsDied = {};
 	var nextEnvironment = currentEnvironment;
 	for(cell in currentEnvironment){
+		//debugger;
 		if(currentEnvironment[cell].live && (currentEnvironment[cell].neighbors < 2 || currentEnvironment[cell].neighbors > 3)){
 			killCell(currentEnvironment[cell], nextEnvironment, liveCells, cellsDied);
 		}
@@ -77,14 +82,14 @@ var killCell = function(cell, environment, liveCells, cellsDied){
 	cell.live = false;
 	delete liveCells['cell' + cell.id];
 	cellsDied['cell' + cell.id] = cell;
-	updateNeighborCount(cell, environment, -1);
+	updateNeighborCount(cell, environment, liveCells, -1);
 };
 
 var cellBorn = function(cell, environment, liveCells, cellsBorn){
 	cell.live = true;
 	liveCells['cell' + cell.id] = cell;
 	cellsBorn['cell' + cell.id] = cell;
-	updateNeighborCount(cell, environment, 1);
+	updateNeighborCount(cell, environment, liveCells, 1);
 };
 
 var countNeighbors = function(liveCells, currentEnvironment){
