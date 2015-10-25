@@ -1,5 +1,6 @@
+var cellCreator = require('./cell.js');
 var interval;
-var ticksPerSecond = 60;
+var ticksPerSecond = 2;
 var generationNumber = 0;
 var maxRow = 0;
 var maxCol = 0;
@@ -43,6 +44,11 @@ var getGenerationNumber = function(){
 	return generationNumber;
 };
 
+var resetGame = function(){
+	console.log('reseting generation number')
+	generationNumber = 0;
+}
+
 var changeGridSize = function(rows, cols){
 	maxRow = rows - 1;
 	maxCol = cols - 1;
@@ -61,7 +67,7 @@ var nextGen = function(currentEnvironment, liveCells){
 	}
 	return {
 		'nextEnvironment':nextEnvironment,
-		'cellsBorn':``,
+		'cellsBorn':cellsBorn,
 		'cellsDied':cellsDied, 
 		'liveCells':liveCells
 	}
@@ -105,7 +111,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
-			environment['cell' + newID] = {'id': newID, 'row': row - 1, 'col': col - 1, live: isAlive, 'neighbors': 0};
+			environment['cell' + newID] = cellCreator.createCell(newID, row - 1, col - 1, isAlive, 0); //{'id': newID, 'row': row - 1, 'col': col - 1, live: isAlive, 'neighbors': 0};
 		}
 		environment['cell' + newID].neighbors+= change;
 	}
@@ -118,7 +124,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
-			environment['cell' + newID] = {'id': newID, 'row': row - 1, 'col': col, live: isAlive,'neighbors': 0};
+			environment['cell' + newID] = cellCreator.createCell(newID, row - 1, col, isAlive, 0);//{'id': newID, 'row': row - 1, 'col': col, live: isAlive,'neighbors': 0};
 		}
 
 		environment['cell' + newID].neighbors+= change;
@@ -132,7 +138,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
-			environment['cell' + newID] = {'id': newID, 'row': row - 1, 'col': col + 1, live: isAlive, 'neighbors': 0};
+			environment['cell' + newID] = cellCreator.createCell(newID, row - 1, col + 1, isAlive, 0);//{'id': newID, 'row': row - 1, 'col': col + 1, live: isAlive, 'neighbors': 0};
 		}
 
 		environment['cell' + newID].neighbors+= change;
@@ -146,7 +152,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
-			environment['cell' + newID] = {'id': newID, 'row': row, 'col': col - 1, live: isAlive, 'neighbors': 0};
+			environment['cell' + newID] = cellCreator.createCell(newID, row, col - 1, isAlive, 0);//{'id': newID, 'row': row, 'col': col - 1, live: isAlive, 'neighbors': 0};
 		}
 
 		environment['cell' + newID].neighbors+= change;
@@ -160,7 +166,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
-			environment['cell' + newID] = {'id': newID, 'row': row, 'col': col + 1, live: isAlive, 'neighbors': 0};
+			environment['cell' + newID] = cellCreator.createCell(newID, row , col + 1, isAlive, 0);//{'id': newID, 'row': row, 'col': col + 1, live: isAlive, 'neighbors': 0};
 		}
 
 		environment['cell' + newID].neighbors+= change;
@@ -174,7 +180,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
-			environment['cell' + newID] = {'id': newID, 'row': row + 1, 'col': col - 1, live: isAlive, 'neighbors': 0};
+			environment['cell' + newID] = cellCreator.createCell(newID, row + 1, col - 1, isAlive, 0);//{'id': newID, 'row': row + 1, 'col': col - 1, live: isAlive, 'neighbors': 0};
 		}
 
 		environment['cell' + newID].neighbors+= change;
@@ -188,7 +194,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
-			environment['cell' + newID] = {'id': newID, 'row': row + 1, 'col': col, live: isAlive, 'neighbors': 0};
+			environment['cell' + newID] = cellCreator.createCell(newID, row + 1, col, isAlive, 0);//{'id': newID, 'row': row + 1, 'col': col, live: isAlive, 'neighbors': 0};
 		}
 
 		environment['cell' + newID].neighbors+= change;
@@ -202,7 +208,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
-			environment['cell' + newID] = {'id': newID, 'row': row + 1, 'col': col + 1, live: isAlive, 'neighbors': 0};
+			environment['cell' + newID] = cellCreator.createCell(newID, row + 1, col + 1, isAlive, 0);//{'id': newID, 'row': row + 1, 'col': col + 1, live: isAlive, 'neighbors': 0};
 		}
 
 		environment['cell' + newID].neighbors+= change;
@@ -215,6 +221,7 @@ module.exports = {
 		'runGame':runGame,
 		'getGenerationNumber': getGenerationNumber,
 		'currentLiveCells':currentLiveCells,
+		'resetGame': resetGame,
 		//test functions
 		'updateNeighborCount': updateNeighborCount,
 		'changeGridSize':changeGridSize

@@ -5,7 +5,8 @@
     "start": "node server/app.js",
     "postinstall": "./node_modules/bower/bin/bower install",
     "nodemon": "nodemon --debug server/app.js",
-    "devBuild": "ttab jasmine-node;ttab node-inspector;npm run nodemon",
+    "devBuildWithTest": "ttab npm run test-server;ttab node-inspector;npm run nodemon",
+    "devBuild": "ttab node-inspector;npm run nodemon",
     "coffee": "coffee --watch --output spec/test_js --compile spec/test_coffee",
     "test-server": "jasmine-node spec --autotest --watch . --growl --coffee"
   },

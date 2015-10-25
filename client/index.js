@@ -74,6 +74,7 @@ $(document).ready(function(){
             clearButton.removeAttr('disabled');
             runningText.hide();
         }
+        clearAllCells();
         for(cellKey in liveCells){
             var cell = $('#' + liveCells[cellKey].id);
             if(!cell.hasClass('live')){
@@ -94,13 +95,13 @@ $(document).ready(function(){
         $('#generation-number').text(generationNumber);
         var uiCell;
         for(cell in cellsBorn){
-            uiCell = $('#' + cell.id);
+            uiCell = $('#' + cellsBorn[cell].id);
             if(!uiCell.hasClass('live')){
                 uiCell.addClass('live');
             }
         }
         for(cell in cellsDied){
-            uiCell = $('#' + cell.id);
+            uiCell = $('#' + cellsDied[cell].id);
             if(uiCell.hasClass('live')){
                 uiCell.removeClass('live');
             }    
@@ -115,14 +116,9 @@ $(document).ready(function(){
         runningText.hide();
     });
 
-    socket.on('clear', function(liveCells){
-        //surely we could just query for every cell with the live class and remove that though?
-        for(cellKey in liveCells){
-            var cell = $('#' + liveCells[cellKey].id);
-            if(cell.hasClass('live')){
-                cell.removeClass('live');
-            }
-        }
+    socket.on('clear', function(liveCells, generationNumber){
+        $('#generation-number').text(generationNumber);
+        clearAllCells();
     });
 
     socket.on('life', function(id){
@@ -140,4 +136,8 @@ $(document).ready(function(){
             cell.removeClass('live');
         } 
     });
+
+    var clearAllCells = function() {
+        $('.live').removeClass('live');
+    }
 });    

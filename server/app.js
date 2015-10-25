@@ -4,6 +4,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 var game = require('./GOL.js');
+var _ = require('lodash');
+var cellCreator = require('./cell.js');
 
 var port = process.env.PORT || 5003;
 
@@ -18,12 +20,13 @@ var running = false;
 
 io.on('connection', function(socket){
 	console.log('someone connected');
-	socket.emit('join', game.currentGen || liveCells, running, game.getGenerationNumber());
+	var currentLiveCells = game.currentLiveCells()
+	socket.emit('join', _.isEmpty(currentLiveCells) ? liveCells : currentLiveCells, running, game.getGenerationNumber());
 
 	socket.on('stopping', function(){
 		running = false;
 		game.killGame();
-		liveCells = game.currentGen;
+		liveCells = game.currentLiveCells();
 		io.sockets.emit('stopping');
 	});
 
@@ -35,13 +38,14 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('clear', function(){
-		io.sockets.emit('clear', liveCells);
+		game.resetGame();
+		io.sockets.emit('clear', liveCells, game.getGenerationNumber());
 		liveCells = {};
 	});
 
 	socket.on('cell-selected', function(id){
 		var rowCol = id.split('-');
-		liveCells['cell' + id] = {'id': id, 'row': rowCol[0], 'col':rowCol[1], 'live': true, 'neighbors': 0};
+		liveCells['cell' + id] = cellCreator.createCell(id, parseInt(rowCol[0], 10), parseInt(rowCol[1], 10), true, 0);
 		io.sockets.emit('life', id);
 	});
 
