@@ -1,6 +1,7 @@
 var cellCreator = require('./cell.js');
+var _ = require('lodash');
 var interval;
-var ticksPerSecond = 60;
+var ticksPerSecond = 10;
 var generationNumber = 0;
 var maxRow = 0;
 var maxCol = 0;
@@ -22,19 +23,15 @@ var initializeGame = function (initialLiveCells, maxRows, maxCols){
 }
 
 var runGame = function(io){
-	var liveCells = globalLiveCells;
-	var currentEnvironment = globalCurrentEnvironment;
-	countNeighbors(liveCells, currentEnvironment);
-	var game = function(){
-		debugger;
+	var game = function(liveCells){
+		currentEnvironment = {};
+		countNeighbors(liveCells, currentEnvironment);
 		var nextGeneration = nextGen(currentEnvironment, liveCells);
 		io.sockets.emit('nextGen', ++generationNumber, nextGeneration.cellsBorn, nextGeneration.cellsDied);
 		console.log('generation: #%d', generationNumber);
-		currentEnvironment = nextGeneration.nextEnvironment;
-		globalCurrentEnvironment = currentEnvironment;
 		globalLiveCells = nextGeneration.liveCells;
 	};
-	interval = setInterval(game, 3000/*1000/ticksPerSecond*/);
+	interval = setInterval(game, 1000/ticksPerSecond,  _.clone(globalLiveCells, true));
 };
 
 var currentLiveCells = function(){
@@ -58,16 +55,16 @@ var changeGridSize = function(rows, cols){
 }
 
 var nextGen = function(currentEnvironment, liveCells){
-	//debugger;
-	var cellsBorn = cellsDied = {};
-	var nextEnvironment = currentEnvironment;
+	var cellsBorn = {};
+	var cellsDied = {};
+	var nextEnvironment = _.clone(currentEnvironment, true);
+
 	for(cell in currentEnvironment){
-		//debugger;
 		if(currentEnvironment[cell].live && (currentEnvironment[cell].neighbors < 2 || currentEnvironment[cell].neighbors > 3)){
-			killCell(currentEnvironment[cell], nextEnvironment, liveCells, cellsDied);
+			killCell(nextEnvironment[cell], nextEnvironment, liveCells, cellsDied);
 		}
 		else if(!currentEnvironment[cell].live && currentEnvironment[cell].neighbors === 3){
-			cellBorn(currentEnvironment[cell], nextEnvironment, liveCells, cellsBorn);
+			cellBorn(nextEnvironment[cell], nextEnvironment, liveCells, cellsBorn);
 		}
 	}
 	return {
@@ -92,9 +89,9 @@ var cellBorn = function(cell, environment, liveCells, cellsBorn){
 	updateNeighborCount(cell, environment, liveCells, 1);
 };
 
-var countNeighbors = function(liveCells, currentEnvironment){
+var countNeighbors = function(liveCells, environment){
 	for(cell in liveCells){
-		updateNeighborCount(liveCells[cell], currentEnvironment, liveCells, 1);
+		updateNeighborCount(liveCells[cell], environment, liveCells, 1);
 	}
 };
 
@@ -103,6 +100,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 	var col = cell.col;
 	var newID;
 	var isAlive;
+
 	//exclude out of bounds cells
 	if(row < 0 || col < 0 || row > maxRow || col > maxCol){
 		return;
@@ -112,7 +110,7 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 		isAlive = false;
 		newID = (row - 1) + '-' + (col - 1);
 		if(liveCells['cell' + newID]){
-			liveCells['cell' + newID].neighbors+= change;
+			liveCells['cell' + newID].neighbors += change;
 			isAlive = true;
 		}
 		if(!environment['cell' + newID]){
