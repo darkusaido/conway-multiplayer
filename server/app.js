@@ -43,10 +43,11 @@ io.on('connection', function(socket){
 		liveCells = {};
 	});
 
-	socket.on('cell-selected', function(id){
+	socket.on('cell-selected', function(id, color){
 		var rowCol = id.split('-');
-		liveCells['cell' + id] = cellCreator.createCell(id, parseInt(rowCol[0], 10), parseInt(rowCol[1], 10), true, 0);
-		io.sockets.emit('life', id);
+		console.log("cell with " + color);
+		liveCells['cell' + id] = cellCreator.createCell(id, color, parseInt(rowCol[0], 10), parseInt(rowCol[1], 10), true, 0);
+		io.sockets.emit('life', liveCells['cell' + id]);
 	});
 
 	socket.on('cell-deselected', function(id){

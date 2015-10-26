@@ -1,10 +1,11 @@
-var createCell = function (id, row, col, live, neighbors){
+var createCell = function (id, color, row, col, live, neighbors){
 	return {
 		'id': id,
 		'row': row,
 		'col': col,
 		'live': live,
-		'neighbors': neighbors
+		'neighbors': neighbors,
+		'color': color
 	} 
 }
 

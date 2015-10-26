@@ -7,10 +7,6 @@ td {
 	width: 20px;
 	min-width: 20px;
 	height: 20px;
-    background-color: #dddddd;
     border: 3px solid white;
-}
-
-.live{
-	background-color: #2e7ab7;
+    background-color: #eeeeee;
 }

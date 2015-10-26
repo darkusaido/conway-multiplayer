@@ -6,6 +6,13 @@ $(document).ready(function(){
     var stopButton = $('#stop-button');
     var clearButton = $('#clear-button');
     var runningText = $('#running-text');
+    var userColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+
+    var colorCell = function($cell, cell) {
+        $cell.css('background-color', cell.color);
+        console.log($cell + " is being set to " + cell.color);
+    }
+
     $(this).mousedown(function() {
         mouseIsDown = true;
     }).mouseup(function() {
@@ -21,7 +28,7 @@ $(document).ready(function(){
             socket.emit('cell-deselected', cell.attr('id'));
         }
         else{
-            socket.emit('cell-selected', cell.attr('id'));
+            socket.emit('cell-selected', cell.attr('id'), userColor);
         }
     });
     $('td').on('mouseout', function(){
@@ -30,7 +37,7 @@ $(document).ready(function(){
         }
         var cell = $(this); 
         if(mouseIsDown &&!cell.hasClass('live')){
-            socket.emit('cell-selected', cell.attr('id'));
+            socket.emit('cell-selected', cell.attr('id'), userColor);
         }
     });
 
@@ -80,6 +87,7 @@ $(document).ready(function(){
             if(!cell.hasClass('live')){
                 cell.addClass('live');
             }
+            colorCell(cell, liveCells[cellKey]);
         }
     });
 
@@ -96,12 +104,15 @@ $(document).ready(function(){
         var uiCell;
         for(cell in cellsBorn){
             uiCell = $('#' + cellsBorn[cell].id);
+            colorCell(uiCell, cellsBorn[cell]);
             if(!uiCell.hasClass('live')){
                 uiCell.addClass('live');
             }
         }
         for(cell in cellsDied){
             uiCell = $('#' + cellsDied[cell].id);
+            uiCell.css('background-color', "#eeeeee");
+
             if(uiCell.hasClass('live')){
                 uiCell.removeClass('live');
             }    
@@ -121,9 +132,11 @@ $(document).ready(function(){
         clearAllCells();
     });
 
-    socket.on('life', function(id){
-        console.log('life at ' + id);
+    socket.on('life', function(cellObj){
+        id = cellObj.id;
+        console.log('life at ' + JSON.stringify(cellObj));
         var cell = $('#' + id);
+        colorCell(cell, cellObj)
         if(!cell.hasClass('live')){
             cell.addClass('live');
         }
@@ -132,12 +145,14 @@ $(document).ready(function(){
     socket.on('death', function(id){
         console.log('death at ' + id);
         var cell = $('#' + id);
+        cell.css('background-color', "#eeeeee");
         if(cell.hasClass('live')){
             cell.removeClass('live');
         } 
     });
 
     var clearAllCells = function() {
+        $('.live').css('background-color', "#eeeeee");
         $('.live').removeClass('live');
     }
 });    
