@@ -1,4 +1,4 @@
-var cellCreator = require('./cell.js');
+var cellCreator = require('./cellFactory.js');
 
 // GAME OF LIFE AS OBJECT
 //considers a "cell" to be any object with a row and col field
