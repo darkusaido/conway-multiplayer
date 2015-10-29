@@ -27,11 +27,11 @@ function rgbToHex(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-var killGame = function(){
+var killGame = function killGame(){
 	clearInterval(interval);
 };
 
-var initializeGame = function (initialLiveCells, maxRows, maxCols){
+var initializeGame = function initializeGame(initialLiveCells, maxRows, maxCols){
 	if(!maxRows){
 		maxRow = 29;
 	}
@@ -41,7 +41,7 @@ var initializeGame = function (initialLiveCells, maxRows, maxCols){
 	globalLiveCells = initialLiveCells;
 }
 
-var runGame = function(io){
+var runGame = function runGame(io){
 	var game = function(liveCells){
 		currentEnvironment = {};
 		countNeighbors(liveCells, currentEnvironment);
@@ -53,27 +53,27 @@ var runGame = function(io){
 	interval = setInterval(game, 100,  _.clone(globalLiveCells, true));
 };
 
-var currentLiveCells = function(){
+var currentLiveCells = function currentLiveCells(){
 	return globalLiveCells;
 };
 
-var getGenerationNumber = function(){
+var getGenerationNumber = function getGenerationNumber(){
 	return generationNumber;
 };
 
-var resetGame = function(){
+var resetGame = function resetGame(){
 	console.log('reseting generation number')
 	generationNumber = 0;
 	globalLiveCells = {};
 	globalCurrentEnvironment = {};
 }
 
-var changeGridSize = function(rows, cols){
+var changeGridSize = function changeGridSize(rows, cols){
 	maxRow = rows - 1;
 	maxCol = cols - 1;
 }
 
-var nextGen = function(currentEnvironment, liveCells){
+var nextGen = function nextGen(currentEnvironment, liveCells){
 	var cellsBorn = {};
 	var cellsDied = {};
 	var nextEnvironment = _.clone(currentEnvironment, true);
@@ -94,14 +94,14 @@ var nextGen = function(currentEnvironment, liveCells){
 	}
 };
 
-var killCell = function(cell, environment, liveCells, cellsDied){
+var killCell = function killCell(cell, environment, liveCells, cellsDied){
 	cell.live = false;
 	delete liveCells['cell' + cell.id];
 	cellsDied['cell' + cell.id] = cell;
 	updateNeighborCount(cell, environment, liveCells, -1);
 };
 
-var cellBorn = function(cell, environment, liveCells, cellsBorn){
+var cellBorn = function cellBorn(cell, environment, liveCells, cellsBorn){
 	cell.live = true;
 	liveCells['cell' + cell.id] = cell;
 	cellsBorn['cell' + cell.id] = cell;
@@ -115,15 +115,15 @@ var cellBorn = function(cell, environment, liveCells, cellsBorn){
 	}
 };
 
-var countNeighbors = function(liveCells, environment){
+var countNeighbors = function countNeighbors(liveCells, environment){
 	for(cell in liveCells){
 		updateNeighborCount(liveCells[cell], environment, liveCells, 1);
 	}
 };
 
-var addColors = function(cell, borderCell) {
+var addColors = function addColors(cell, borderCell) {
 	// why does this happen
-	console.log
+	//console.log
 	if(!borderCell.color){
 		return;
 	}
@@ -137,7 +137,7 @@ var addColors = function(cell, borderCell) {
 
 //i get the sense that this code could be vastly improved :P
 //factor out repeating stuff into a function at least?
-var updateNeighborCount = function(cell, environment, liveCells, change){
+var updateNeighborCount = function updateNeighborCount(cell, environment, liveCells, change){
 	var row = cell.row;
 	var col = cell.col;
 	var newID;
@@ -272,14 +272,13 @@ var updateNeighborCount = function(cell, environment, liveCells, change){
 	}
 };
 
+
+
 module.exports = {
 		'killGame': killGame,
 		'initializeGame': initializeGame,
 		'runGame':runGame,
 		'getGenerationNumber': getGenerationNumber,
 		'currentLiveCells':currentLiveCells,
-		'resetGame': resetGame,
-		//test functions
-		'updateNeighborCount': updateNeighborCount,
-		'changeGridSize':changeGridSize
+		'resetGame': resetGame
 };

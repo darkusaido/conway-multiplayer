@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function documentReady(){
     var socket = io();
     var mouseIsDown = false;
     var running = false;
@@ -13,12 +13,12 @@ $(document).ready(function(){
         console.log($cell + " is being set to " + cell.color);
     }
 
-    $(this).mousedown(function() {
+    $(this).mousedown(function mouseIsDownSetter() {
         mouseIsDown = true;
-    }).mouseup(function() {
+    }).mouseup(function mouseIsUpSetter() {
         mouseIsDown = false;
     });
-    $('td').on('mousedown', function(e){
+    $('td').on('mousedown', function cellMouseDownHandler(e){
         e.preventDefault();
         if(running){
             return;
@@ -31,7 +31,7 @@ $(document).ready(function(){
             socket.emit('cell-selected', cell.attr('id'), userColor);
         }
     });
-    $('td').on('mouseout', function(){
+    $('td').on('mouseout', function cellMouseOutHandler(){
         if(running){
             return;
         }
@@ -41,14 +41,14 @@ $(document).ready(function(){
         }
     });
 
-    clearButton.on('click', function(){
+    clearButton.on('click', function clearButtonClickHandler(){
         console.log('clear button clicked');
         if(!running){
             socket.emit('clear');
         }
     });
 
-    runButton.on('click', function(){
+    runButton.on('click', function runButtonClickHandler(){
         console.log('run button clicked')
         socket.emit('running');
         $(this).attr('disabled', 'disabled');
@@ -57,7 +57,7 @@ $(document).ready(function(){
         runningText.show();
     });
 
-    stopButton.on('click', function(){
+    stopButton.on('click', function stopButtonClickHandler(){
         console.log('stop button clicked')
         socket.emit('stopping');
         $(this).attr('disabled', 'disabled');
@@ -66,7 +66,7 @@ $(document).ready(function(){
         runningText.hide();
     });
 
-    socket.on('join', function(liveCells, isRunning, generationNumber){
+    socket.on('join', function socketJoinHandler(liveCells, isRunning, generationNumber){
         running = isRunning;
         $('#generation-number').text(generationNumber);
         if(running){
@@ -91,7 +91,7 @@ $(document).ready(function(){
         }
     });
 
-    socket.on('running', function(){
+    socket.on('running', function socketGameRunningHandler(){
         running = true;
         runButton.attr('disabled', 'disabled');
         stopButton.removeAttr('disabled');
@@ -99,7 +99,7 @@ $(document).ready(function(){
         runningText.show();
     });
 
-    socket.on('nextGen', function(generationNumber, cellsBorn, cellsDied){
+    socket.on('nextGen', function socketNextGenerationHandler(generationNumber, cellsBorn, cellsDied){
         $('#generation-number').text(generationNumber);
         var uiCell;
         for(cell in cellsBorn){
@@ -119,7 +119,7 @@ $(document).ready(function(){
         }
     });
 
-    socket.on('stopping', function(){
+    socket.on('stopping', function socketGameStoppingHandler(){
         running = false;
         stopButton.attr('disabled', 'disabled');
         runButton.removeAttr('disabled');
@@ -127,12 +127,12 @@ $(document).ready(function(){
         runningText.hide();
     });
 
-    socket.on('clear', function(liveCells, generationNumber){
+    socket.on('clear', function socketClearingHandler(liveCells, generationNumber){
         $('#generation-number').text(generationNumber);
         clearAllCells();
     });
 
-    socket.on('life', function(cellObj){
+    socket.on('life', function socketLifeHandler(cellObj){
         id = cellObj.id;
         console.log('life at ' + JSON.stringify(cellObj));
         var cell = $('#' + id);
@@ -142,7 +142,7 @@ $(document).ready(function(){
         }
     });
 
-    socket.on('death', function(id){
+    socket.on('death', function socketDeathHandler(id){
         console.log('death at ' + id);
         var cell = $('#' + id);
         cell.css('background-color', "#eeeeee");
@@ -151,7 +151,7 @@ $(document).ready(function(){
         } 
     });
 
-    var clearAllCells = function() {
+    var clearAllCells = function clearAllCellsHandler() {
         $('.live').css('background-color', "#eeeeee");
         $('.live').removeClass('live');
     }
