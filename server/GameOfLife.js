@@ -56,7 +56,8 @@ GameOfLife.prototype.iterate = function () {
 
 			//LIFE
 			if(currentSum == 3) {
-				newArray[x][y] = cellCreator.createCell(x, y);
+				//ARGGH x => COL, y => ROW
+				newArray[x][y] = cellCreator.createCell(y, x);
 
 				//if changed, add to toggle list
 				if(currentArray[x][y] === null) {
@@ -88,10 +89,13 @@ GameOfLife.prototype.addCell(cell) {
 
 GameOfLife.prototype.currentCells() {
 	var liveCells = [];
+	var currentCell = currentArray[x][y];
 	
 	for(var x = 0; x < this.width; x++) {
 		for(var y = 0; y < this.height; y++) {
-			liveCells.push_back(currentArray[x][y]);
+			if(currentCell) {
+				liveCells.push_back(currentCell);
+			}
 		}
 	}
 

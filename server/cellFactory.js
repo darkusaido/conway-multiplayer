@@ -1,9 +1,17 @@
 var createCell = function (row, col){
-	return {
-		//i like working in math
-		'y': row,
-		'x': col
-	} 
+
+	//ARGGH x => COL, y => ROW
+
+	var Cell = function (x, y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	Cell.prototype.getID = function () {
+		return "" + this.y + "-" + this.x;
+	}
+
+	return new Cell(col, row);
 }
 
 module.exports = {
