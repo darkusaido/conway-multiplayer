@@ -8,9 +8,9 @@ $(document).ready(function(){
     var userColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
 
     var colorCell = function(cell) {
-        $(cell.getID()).css('background-color', cell.alive ? cell.color : DEAD_COLOR);
+        $('#' + cell.id).css('background-color', cell.alive ? cell.color : DEAD_COLOR);
 
-        console.log($(cell.getID()) + " is alive? " + cell.alive + " and has color " + cell.color);
+        console.log($('#' + cell.id) + " is alive? " + cell.alive + " and has color " + cell.color);
     }
 
     var isAlive = function (jcell) {
@@ -29,14 +29,14 @@ $(document).ready(function(){
         var jcell = $(this);
 
         if(!isAlive(jcell)){
-            socket.emit('add', cell.attr('id'));
+            socket.emit('add', jcell.attr('id'));
         }
     });
     $('td').on('mouseout', function(){
         var jcell = $(this);
 
         if(mouseIsDown && !isAlive(jcell)){
-            socket.emit('add', cell.attr('id'));
+            socket.emit('add', jcell.attr('id'));
         }
     });
 
@@ -50,6 +50,5 @@ $(document).ready(function(){
 
     socket.on('add', function(cell){
         colorCell(cell);
-        console.log('life at ' + JSON.stringify(cellObj));
     });
 });    

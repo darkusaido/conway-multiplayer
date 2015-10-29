@@ -10,17 +10,18 @@ var GameOfLife = function(liveCellArray, width, height) {
 	var currentCell;
 
 	//set defaults
-	for(var x = 0; x < width; x++) {
-		for(var y = 0; y < height; y++) {
+	for(var x = 0; x < this.width; x++) {
+		this.currentArray[x] = [];
+		for(var y = 0; y < this.height; y++) {
 			//null means dead/not alive
-			currentArray[x][y] = null;
+			this.currentArray[x][y] = null;
 		}
 	}
 
 	//add currently alive cells
 	for(var cell_num = 0; cell_num < liveCellArray.length; cell_num++) {
 		currentCell = liveCellArray[cell_num];
-		currentArray[currentCell.col][currentCell.row] = currentCell;
+		this.currentArray[currentCell.col][currentCell.row] = currentCell;
 	}
 }
 
@@ -30,12 +31,26 @@ GameOfLife.prototype.iterate = function () {
 	var currentSum = 0;
 	var changedCells = [];
 
+	//set defaults
+	for(var x = 0; x < this.width; x++) {
+		newArray[x] = [];
+		for(var y = 0; y < this.height; y++) {
+			//null means dead/not alive
+			newArray[x][y] = null;
+		}
+	}
+
 	var getValue = function(x, y) {
-		var cell = this.currentArray[x][y];
+		var col = this.currentArray[x];
+		if(!col) {
+			return 0;
+		}
+
+		var cell = col[y];
 
 		//null is dead cell, undefined is bad access
 		return !!cell ? 1 : 0;
-	}
+	}.bind(this);
 
 	var getSum = function (x, y) {
 		var sum = 0;
@@ -46,7 +61,9 @@ GameOfLife.prototype.iterate = function () {
 				sum += getValue(x_index, y_index);
 			}
 		}
-	}
+
+		return sum;
+	}.bind(this);
 
 	for(var x = 0; x < this.width; x++) {
 		for(var y = 0; y < this.height; y++) {
@@ -55,49 +72,53 @@ GameOfLife.prototype.iterate = function () {
 			// more succint version of the rules based on the total sum in a 3x3 (including center)
 
 			//LIFE
-			if(currentSum == 3) {
+			if(currentSum === 3) {
 				//ARGGH x => COL, y => ROW
 				newArray[x][y] = cellCreator.createCell(y, x);
 
 				//if changed, add to toggle list
-				if(currentArray[x][y] === null) {
-					changedCells.push_back(newArray[x][y]);
+				if(this.currentArray[x][y] === null) {
+					changedCells.push(newArray[x][y]);
 				}
 
 				//CONSTANT
-			} else if (currentSum == 4) {
-				newArray[x][y] = currentArray[x][y];
+			} else if (currentSum === 4) {
+				newArray[x][y] = this.currentArray[x][y];
 
 				// DEATH
 			} else {
 				newArray[x][y] = null;
 
-				//mark for death for convenience
-				currentArray[x][y].alive = false;
-
 				//if changed, add to toggle list
-				if(currentArray[x][y] !== null) {
-					changedCells.push_back(currentArray[x][y]);
+				if(this.currentArray[x][y] !== null) {
+					//mark for death for convenience
+					this.currentArray[x][y].alive = false;
+
+					changedCells.push(this.currentArray[x][y]);
 				}
 			}
 		}
 	}
 
+	this.currentArray = newArray;
+
 	return changedCells;
 }
 
-GameOfLife.prototype.addCell(cell) {
-	currentArray[cell.x][cell.y] = cell;
+GameOfLife.prototype.addCell = function (cell) {
+	this.currentArray[cell.x][cell.y] = cell;
 }
 
-GameOfLife.prototype.currentCells() {
+GameOfLife.prototype.getCurrentCells = function () {
 	var liveCells = [];
-	var currentCell = currentArray[x][y];
+	var currentCell;
 	
 	for(var x = 0; x < this.width; x++) {
 		for(var y = 0; y < this.height; y++) {
+			var currentCell = this.currentArray[x][y];
+
 			if(currentCell) {
-				liveCells.push_back(currentCell);
+				liveCells.push(currentCell);
 			}
 		}
 	}
