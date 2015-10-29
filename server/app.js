@@ -3,9 +3,12 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
-var game = require('./GOL.js');
 var _ = require('lodash');
-var cellCreator = require('./cell.js');
+
+
+var cellCreator = require('./cellFactory.js');
+//create new game
+var game = new require('./GOL.js')([], 49, 29);
 
 var port = process.env.PORT || 5003;
 
@@ -15,48 +18,24 @@ app.get('/', function(request, response){
 	response.sendFile(path.resolve(__dirname + '/../client/index.html'));
 });
 
-var liveCells = {};
-var running = false;
+var runGame = function () {
+	socket.emit('iterate', game.iterate());
+}
+
+//run game every tenth second, regardless of users
+setInterval(runGame, 100);
 
 io.on('connection', function(socket){
 	console.log('someone connected');
-	var currentLiveCells = game.currentLiveCells()
-	socket.emit('join', _.isEmpty(currentLiveCells) ? liveCells : currentLiveCells, running, game.getGenerationNumber());
+	socket.emit('join', game.currentLiveCells());
 
-	socket.on('stopping', function(){
-		running = false;
-		game.killGame();
-		liveCells = game.currentLiveCells();
-		io.sockets.emit('stopping');
-	});
-
-	socket.on('running', function(){
-		running = true;
-		io.sockets.emit('running');
-		game.initializeGame(liveCells);
-		game.runGame(io);
-	});
-
-	socket.on('clear', function(){
-		game.resetGame();
-		io.sockets.emit('clear', liveCells, game.getGenerationNumber());
-		liveCells = {};
-	});
-
-	socket.on('cell-selected', function(id, color){
+	socket.on('add', function(id){
 		var rowCol = id.split('-');
-		console.log("cell with " + color);
-		liveCells['cell' + id] = cellCreator.createCell(id, color, parseInt(rowCol[0], 10), parseInt(rowCol[1], 10), true, 0);
-		io.sockets.emit('life', liveCells['cell' + id]);
-	});
-
-	socket.on('cell-deselected', function(id){
-		delete liveCells['cell' + id];
-		io.sockets.emit('death', id);
-	});
-
-	socket.on('disconnect', function(){
-		console.log('someone disconnected');
+		var row = parseInt(rowCol[0], 10);
+		var col = parseInt(rowCol[1], 10);
+		var newCell = cellCreator.createCell(row, col);
+		game.add(newCell);
+		io.sockets.emit('add', newCell);
 	});
 });
 

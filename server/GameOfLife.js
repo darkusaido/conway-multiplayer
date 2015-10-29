@@ -72,6 +72,9 @@ GameOfLife.prototype.iterate = function () {
 			} else {
 				newArray[x][y] = null;
 
+				//mark for death for convenience
+				currentArray[x][y].alive = false;
+
 				//if changed, add to toggle list
 				if(currentArray[x][y] !== null) {
 					changedCells.push_back(currentArray[x][y]);

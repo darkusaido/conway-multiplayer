@@ -5,10 +5,12 @@ var createCell = function (row, col){
 	var Cell = function (x, y) {
 		this.x = x;
 		this.y = y;
+		this.color = '#444444';
+		this.alive = true;
 	}
 
 	Cell.prototype.getID = function () {
-		return "" + this.y + "-" + this.x;
+		return '' + this.y + '-' + this.x;
 	}
 
 	return new Cell(col, row);
