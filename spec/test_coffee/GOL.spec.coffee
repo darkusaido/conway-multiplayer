@@ -1,7 +1,7 @@
-GOL = require '../../server/GOL.js' 
+#GOL = require '../../server/GOL.js' 
 helper = require '../helpers/GOL_helper.js'
 
-describe 'updateNeighborCount ', -> 
+xdescribe 'updateNeighborCount ', -> 
 	environment = {}
 	expectedEnvironment = {}
 	beforeEach ->

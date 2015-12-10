@@ -5,10 +5,10 @@
     "start": "node server/app.js",
     "postinstall": "./node_modules/bower/bin/bower install",
     "nodemon": "nodemon --debug server/app.js",
-    "devBuildWithTest": "ttab npm run test-server;ttab node-inspector;npm run nodemon",
-    "devBuild": "ttab node-inspector --no-preload;npm run nodemon",
+    "dev-build-with-test": "ttab npm run test-server;ttab node-inspector;npm run nodemon",
+    "dev-build": "ttab node-inspector --no-preload;npm run nodemon",
     "coffee": "coffee --watch --output spec/test_js --compile spec/test_coffee",
-    "test-server": "jasmine-node spec --autotest --watch . --growl --coffee"
+    "test-server": "jasmine-node spec --verbose --autotest --watch . --growl --coffee"
   },
   "dependencies": {
     "bower": "^1.4.1",

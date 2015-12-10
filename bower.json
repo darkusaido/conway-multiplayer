@@ -1,16 +1,16 @@
 {
-  "name": "jorgenonell.me",
+  "name": "conway-multiplayer",
   "version": "0.0.0",
   "authors": [
     "Jorge Nonell <jnone001@fiu.edu>"
   ],
-  "description": "personal/professional info site",
+  "description": "Conway's Game of life in real time across multiple clients",
   "main": "index.html",
   "moduleType": [
     "node"
   ],
   "license": "MIT",
-  "homepage": "jorgenonell.me",
+  "homepage": "conway-multiplayer.herokuapp.com",
   "ignore": [
     "**/.*",
     "node_modules",
