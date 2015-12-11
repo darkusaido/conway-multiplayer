@@ -1,5 +1,6 @@
 "use strict";
 var _ = require('lodash');
+var cell = require('./cell.js');
 
 //instance vars
 var _cells = Symbol();
@@ -64,6 +65,19 @@ module.exports = class environment {
 		return this[_cells][x][y] ? --total : total;
 	}
 
+	cellsEqual(otherCells){
+		if(!(otherCells instanceof Array) || otherCells.length != this[_columns]){
+			return false;			
+		}
+		for(var i = 0; i < value.length; i++){
+			var elem = value[i];
+			if(!(value instanceof Array) || elem.length != this[_rows]){
+				throw new TypeError("cannot set cells; expecting " + this[_columns] + "x" + this[_rows] + " array");		
+			}
+		}
+		if(otherCells
+	}
+
 	toString(){
 		var result = '';
 		for(var j = 0; j < this[_rows]; j++){
@@ -79,7 +93,10 @@ module.exports = class environment {
 function make2DArray(rows, columns){
 	var arr = new Array(columns);
 	for(var i = 0; i < columns; i++){
-		arr[i] = new Array(rows).fill(0);
+		arr[i] = new Array(rows);
+		for(var j = 0; j < rows; j++){
+			arr[i][j] = new cell(i, j)
+		}
 	}
 	return arr;
 }
