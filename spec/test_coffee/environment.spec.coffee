@@ -8,20 +8,67 @@ describe 'constructor should ', ->
 		env1 = new Env(4,3)
 		env2 = new Env(3,4)
 	it 'encapsulate instance vars', ->
-		expect(env1._cells).not.toBeDefined
+		expect(env1._cells).not.toBeDefined()
 	it 'create x by y array of cells', ->
-		testArr = [[new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)], [new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)], [new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
-		expect(env1.cells).toEqual testArr
-		console.log this.addMatchers.toString()
-		#testArr = [[0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-		#expect(env2.cells).toEqual testArr
-	xit 'create seperate instances', ->
-		testArr2 = [[0,0,0], [0,0,0], [0,0,0], [0,0,0]]
-		testArr1 = [[0,0,0,0], [0,0,0,0], [0,0,0,0]]
-		expect(env2.cells).toEqual testArr2
-		expect(env1.cells).toEqual testArr1
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
+		expect(env1.cellsEquals(testArr)).toBeTruthy()
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2)],
+					[new Cell(3,0),new Cell(3,1),new Cell(3,2)]]
+		expect(env2.cellsEquals(testArr)).toBeTruthy()
+	
+describe 'cellsEquals should ', -> 
+	env1 = {}
+	beforeEach ->
+		env1 = new Env(4,3)
+	it 'return true if cells are equal', ->
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
+		expect(env1.cellsEquals(testArr)).toBeTruthy()
+	it 'return false if cells are of different dimensions', ->
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
+		expect(env1.cellsEquals(testArr)).toBeFalsy()
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3), new Cell(1,4)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
+		expect(env1.cellsEquals(testArr)).toBeFalsy()
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)]]
+		expect(env1.cellsEquals(testArr)).toBeFalsy()
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)],
+					[new Cell(3,0),new Cell(3,1),new Cell(3,2),new Cell(3,3)]]
+		expect(env1.cellsEquals(testArr)).toBeFalsy()
+	it 'return false if individual cells are not equal', ->
+		testArr = [ [new Cell(1,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
+		expect(env1.cellsEquals(testArr)).toBeFalsy()
+	it 'return false if comparing against a nonArray', ->
+		testObj = { 
+					0:[new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)]
+					1:[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)]
+					2:[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]
+				  }
+		expect(env1.cellsEquals(testObj)).toBeFalsy()
+		testObj = [ {
+						0:new Cell(0,0)
+						1:new Cell(0,1)
+						3:new Cell(0,2)
+						4:new Cell(0,3)
+					},
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
+		expect(env1.cellsEquals(testObj)).toBeFalsy()
 
-xdescribe 'flipCell should ', ->
+describe 'flipCell should ', ->
 	env1 = {}
 	beforeEach ->
 		env1 = new Env(4,3)
@@ -33,14 +80,20 @@ xdescribe 'flipCell should ', ->
 		expect(() -> env1.flipCell(3,4)).toThrow(new RangeError("index out of bounds"))
 		expect(() -> env1.flipCell(-1,-1)).toThrow(new RangeError("index out of bounds"))
 	it 'set cell with value of 1 if cell is currently 0, and viceversa', ->
-		testArr = [ [0,0,0,0], [0,1,0,0], [0,0,0,0] ]
+		liveCell = new Cell(1,1)
+		liveCell.toggleLife()
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)],
+					[new Cell(1,0),liveCell,new Cell(1,2),new Cell(1,3)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
 		env1.flipCell(1,1)
-		expect(env1.cells).toEqual testArr
-		testArr = [ [0,0,0,0], [0,0,0,0], [0,0,0,0] ]
+		expect(env1.cellsEquals(testArr)).toBeTruthy()
+		testArr = [ [new Cell(0,0),new Cell(0,1),new Cell(0,2),new Cell(0,3)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2),new Cell(1,3)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2),new Cell(2,3)]]
 		env1.flipCell(1,1)
-		expect(env1.cells).toEqual testArr  	
-
-xdescribe 'toString should', ->
+		expect(env1.cellsEquals(testArr)).toBeTruthy()
+	
+describe 'toString should', ->
 	env1 = {}
 	beforeEach ->
 		env1 = new Env(3,4)

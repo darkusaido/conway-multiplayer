@@ -35,8 +35,7 @@ module.exports = class environment {
 		if(x < 0 || x >= this[_columns] || y < 0 || y >= this[_rows]){
 			throw new RangeError("index out of bounds");
 		}
-		var curr = this[_cells][x][y];
-		this[_cells][x][y] = curr ? 0 : 1;
+		this[_cells][x][y].toggleLife();
 	}
 
 	nextGeneration(){
@@ -65,24 +64,29 @@ module.exports = class environment {
 		return this[_cells][x][y] ? --total : total;
 	}
 
-	cellsEqual(otherCells){
+	cellsEquals(otherCells){
 		if(!(otherCells instanceof Array) || otherCells.length != this[_columns]){
 			return false;			
 		}
-		for(var i = 0; i < value.length; i++){
-			var elem = value[i];
-			if(!(value instanceof Array) || elem.length != this[_rows]){
-				throw new TypeError("cannot set cells; expecting " + this[_columns] + "x" + this[_rows] + " array");		
+		for(var i = 0; i < this[_columns]; i++){
+			var otherCellsColumn = otherCells[i];
+			if(!(otherCellsColumn instanceof Array) || otherCellsColumn.length != this[_rows]){
+				return false;		
+			}
+			for(var j = 0; j < this[_rows]; j++){
+				if(!this[_cells][i][j].cellEquals(otherCellsColumn[j])){
+					return false;
+				}
 			}
 		}
-		if(otherCells
+		return true;
 	}
 
 	toString(){
 		var result = '';
 		for(var j = 0; j < this[_rows]; j++){
 			for(var i = 0; i < this[_columns]; i++){
-				result += this[_cells][i][j] + ' ';
+				result += this[_cells][i][j].alive + ' ';
 			}
 			result += '\n';
 		}

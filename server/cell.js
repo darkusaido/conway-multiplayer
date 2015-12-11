@@ -27,14 +27,17 @@ module.exports = class cell {
 		return this[_alive];
 	}
 
-	set alive(value){
-		if(value !== 0 || value !== 1){
-			throw new TypeError('Can only set variable \'alive\' to 0 or 1');
-		}
-		this[_alive] = value;
+	toggleLife(){
+		this[_alive] = this[_alive] ? 0 : 1;
 	}
 
-
+	cellEquals(otherCell){
+		if(this[_x] === otherCell.x && this[_y] === otherCell.y 
+			&& this[_id] === otherCell.id && this[_alive] === otherCell.alive){
+			return true;
+		}
+		return false;
+	}
 
 	toString(){
 		return 'x:' + this[_x] + ' y:' + this[_y] + ' alive:' + this[_alive];
