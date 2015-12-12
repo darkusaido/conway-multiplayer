@@ -1,13 +1,13 @@
 "use strict";
 var _ = require('lodash');
-var cell = require('./cell.js');
+var Cell = require('./cell.js');
 
 //instance vars
 var _cells = Symbol();
 var _rows = Symbol();
 var _columns = Symbol();
 
-module.exports = class environment {
+module.exports = class Environment {
 	constructor(rows, columns){
 		this[_rows] = rows; 
 		this[_columns] = columns;
@@ -18,17 +18,14 @@ module.exports = class environment {
 		return this[_cells];
 	}
 
-	set cells(value){
-		if(!(value instanceof Array) || value.length != this[_columns]){
-			throw new TypeError("cannot set cells; expecting " + this[_columns] + "x" + this[_rows] + " array");
-		}
-		for(var i = 0; i < value.length; i++){
-			var elem = value[i];
-			if(!(value instanceof Array) || elem.length != this[_rows]){
-				throw new TypeError("cannot set cells; expecting " + this[_columns] + "x" + this[_rows] + " array");		
+	//for internal use in the next generation method only, not properly type checking for performance reasons
+	set cells(otherCells){
+		for(var i = 0; i < otherCells.length; i++){
+			var otherColumn = otherCells[i];
+			for(var j = 0; j < otherColumn.length; j++){
+				this[_cells][i][j] = otherColumn[j].clone();
 			}
 		}
-		this[_cells] = _.cloneDeep(value);
 	}
 
 	flipCell(x,y){
@@ -39,11 +36,11 @@ module.exports = class environment {
 	}
 
 	nextGeneration(){
-		var nextEnv = new environment(this[_rows], this[_columns]);
+		var nextEnv = new Environment(this[_rows], this[_columns]);
 		nextEnv.cells = this[_cells];
 		for(var j = 0; j < this[_rows]; j++){
 			for(var i = 0; i < this[_columns]; i++){
-				var alive = this[_cells][i][j];
+				var alive = this[_cells][i][j].alive;
 				var neighborCount = this.neighborCount(i,j);
 				if((alive && (neighborCount < 2 || neighborCount > 3)) || (!alive && neighborCount === 3)) {
 					nextEnv.flipCell(i,j);
@@ -58,10 +55,18 @@ module.exports = class environment {
 			throw new RangeError("index out of bounds");
 		}
 		var neighbors = this[_cells].slice(x-1<0?0:x-1, x+2).map(function(subArr){return subArr.slice(y-1<0?0:y-1, y+2);});
-		function sum(prev, curr){return prev + curr;}
-		var total = neighbors.map(function(subArr){return subArr.reduce(sum)}).reduce(sum);
-		//exclude self from neighbors if alive
-		return this[_cells][x][y] ? --total : total;
+		var count = 0; 
+		for(var i = 0; i < neighbors.length; i++){
+			for(var j = 0; j < neighbors[i].length; j++){
+				if(neighbors[i][j].alive){
+					count++;
+				}
+			}
+		}
+		if(this[_cells][x][y].alive){
+			count--;
+		}
+		return count;
 	}
 
 	cellsEquals(otherCells){
@@ -99,7 +104,7 @@ function make2DArray(rows, columns){
 	for(var i = 0; i < columns; i++){
 		arr[i] = new Array(rows);
 		for(var j = 0; j < rows; j++){
-			arr[i][j] = new cell(i, j)
+			arr[i][j] = new Cell(i, j)
 		}
 	}
 	return arr;

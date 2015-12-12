@@ -46,3 +46,14 @@ describe 'toggleLife should ', ->
 		expect(cell.alive).toBe 1
 		cell.toggleLife()
 		expect(cell.alive).toBe 0
+
+describe 'clone should ', ->
+	cell = {}
+	beforeEach ->
+		cell = new Cell(4,3)
+	it 'return copy', ->
+		expect(cell.cellEquals(cell.clone())).toBeTruthy()
+	it 'create copy with separate instance varibles', ->
+		copy = cell.clone()
+		cell.toggleLife()
+		expect(cell.alive).not.toEqual copy.alive

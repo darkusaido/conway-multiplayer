@@ -6,7 +6,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 //var game = require('./GOL.js');
 var _ = require('lodash');
-//var cellCreator = require('./cell.js');
+var Cell = require('./cell.js');
 var Env = require('./environment.js');
 
 var port = process.env.PORT || 5003;
@@ -24,9 +24,15 @@ io.on('connection', function socketConnectionHandler(socket){
 	console.log('someone connected');
 	var env = new Env(3,4);
 
-	//env.flipCell(1,0);
+	env.neighborCount(1,1);
+
 	env.flipCell(1,1);
-	//env.flipCell(1,2);
+	var otherCells  = [   [new Cell(0,0),new Cell(0,1),new Cell(0,2)],
+						  [new Cell(1,0),new Cell(1,1),new Cell(1,2)],
+						  [new Cell(2,0),new Cell(2,1),new Cell(2,2)],
+						  [new Cell(3,0),new Cell(3,1),new Cell(3,2)]];
+	
+	env.cells = otherCells;
 
 	env.nextGeneration();
 	

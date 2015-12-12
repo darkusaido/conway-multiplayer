@@ -6,7 +6,7 @@ var _y = Symbol();
 var _id = Symbol();
 var _alive = Symbol();
 
-module.exports = class cell {
+module.exports = class Cell {
 	constructor(x, y){
 		this[_x] = x; 
 		this[_y] = y; 
@@ -37,6 +37,14 @@ module.exports = class cell {
 			return true;
 		}
 		return false;
+	}
+
+	clone(){ 
+		var twin = new Cell(this[_x], this[_y]);
+		if(this[_alive] !== twin.alive){
+			twin.toggleLife();
+		}
+		return twin;
 	}
 
 	toString(){

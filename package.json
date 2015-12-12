@@ -5,6 +5,7 @@
     "start": "node server/app.js",
     "postinstall": "./node_modules/bower/bin/bower install",
     "nodemon": "nodemon --debug server/app.js",
+    "inspect": "node-inspector --no-preload",
     "dev-build-with-test": "ttab npm run test-server;ttab node-inspector;npm run nodemon",
     "dev-build": "ttab node-inspector --no-preload;npm run nodemon",
     "coffee": "coffee --watch --output spec/test_js --compile spec/test_coffee",

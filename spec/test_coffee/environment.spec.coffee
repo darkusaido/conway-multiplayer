@@ -106,36 +106,36 @@ describe 'toString should', ->
 		"""
 		expect(env1.toString()).toEqual expectedString
 
-xdescribe 'cells setter should ', ->
+describe 'cells setter should ', ->
 	env1 = {}
 	beforeEach ->
 		env1 = new Env(3,4)
-	it 'not allow you to set cells to objects that is not an array', ->
-		setCells = (val) -> env1.cells = 5
-		expect(setCells).toThrow(new TypeError("cannot set cells; expecting 4x3 array"))
-	it 'not allow you to set cells to array that doesnt have the same number of columns', ->
-		setCells = (val) -> env1.cells = [ [], [], [] ]
-		expect(setCells).toThrow(new TypeError("cannot set cells; expecting 4x3 array"))
-		setCells = (val) -> env1.cells = [ [], [], [], [], [] ]
-		expect(setCells).toThrow(new TypeError("cannot set cells; expecting 4x3 array"))
-	it 'not allow you to set cells to objects that is not an array of ', ->
-		setCells = (val) -> env1.cells = [ [1,2,3], [1,2,3], [1,2,3], [1,2] ]
-		expect(setCells).toThrow(new TypeError("cannot set cells; expecting 4x3 array"))
-		setCells = (val) -> env1.cells = [ [1,2,3], [1,2], [1,2,3], [1,2,3] ]
-		expect(setCells).toThrow(new TypeError("cannot set cells; expecting 4x3 array"))
 	it 'not keep a reference to value passed alive', ->
-		arr = [ [1,2,3], [1,2,3], [1,2,3], [1,2,3] ]
-		arr2 = [ [1,2,3], [1,2,3], [1,2,3], [1,2,3] ]
+		arr =   [   [new Cell(0,0),new Cell(0,1),new Cell(0,2)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2)],
+					[new Cell(3,0),new Cell(3,1),new Cell(3,2)]]
+		arr2 =  [ 	[new Cell(0,0),new Cell(0,1),new Cell(0,2)],
+				    [new Cell(1,0),new Cell(1,1),new Cell(1,2)],
+				    [new Cell(2,0),new Cell(2,1),new Cell(2,2)],
+					[new Cell(3,0),new Cell(3,1),new Cell(3,2)]]
+		console.log(arr);
+		console.log(env1.toString())
 		env1.cells = arr
-		arr[1][1] = 1
-		expect(env1.cells).toEqual arr2
+		console.log(env1.toString())
+		arr[1][1].toggleLife();
+		expect(env1.cellsEquals(arr2)).toBeTruthy()
+		expect(env1.cellsEquals(arr)).toBeFalsy()
 	it 'allow you to set cells to objects array of correct dimentions', ->
-		arr = [ [1,2,3], [1,2,3], [1,2,3], [1,2,3] ]
+		arr =   [   [new Cell(0,0),new Cell(0,1),new Cell(0,2)],
+					[new Cell(1,0),new Cell(1,1),new Cell(1,2)],
+					[new Cell(2,0),new Cell(2,1),new Cell(2,2)],
+					[new Cell(3,0),new Cell(3,1),new Cell(3,2)]]
 		env1.cells = arr
-		expect(env1.cells).toEqual arr
+		expect(env1.cellsEquals(arr)).toBeTruthy()
   
 
-xdescribe 'nextGeneration should update cells according to games of life rules ', ->
+describe 'nextGeneration should update cells according to games of life rules ', ->
 	#testing against the toString representation of the environment because 2d arrays in [x][y] format
 	#are impossible to represent intuitively in code. Strings will give a better visual representation. 
 	describe 'Rule 1: Any live cell with fewer than two live neighbours dies, as if caused by under-population.', ->
@@ -228,7 +228,7 @@ xdescribe 'nextGeneration should update cells according to games of life rules '
 			env1.nextGeneration();
 			expect(env1.toString()).toEqual expectedEnv		
 
-xdescribe 'idiosyncratic structures: ', ->
+describe 'idiosyncratic structures: ', ->
 	describe 'still lives: ', ->
 		it 'block', ->
 			env1 = new Env(3,3)
@@ -1020,10 +1020,12 @@ xdescribe 'idiosyncratic structures: ', ->
 			env1.nextGeneration();
 			expect(env1.toString()).toEqual expectedEnv4
 
-xdescribe 'neighborCount should return correct number of neighbors ', ->
+describe 'neighborCount should return correct number of neighbors ', ->
 	env1 = {}
+	env2 = {}
 	beforeEach ->
 		env1 = new Env(3,3)
+		env2 = new Env(3,3)
 	it 'top-left corner cell', ->
 		env1.flipCell(0,1);
 		env1.flipCell(1,1);
@@ -1041,6 +1043,9 @@ xdescribe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(0,1);
 		env1.flipCell(1,2);
 		expect(env1.neighborCount(0,2)).toEqual 2
+		env2.flipCell(1,1)
+		env2.flipCell(0,2)
+		expect(env2.neighborCount(0,2)).toEqual 1
 	it 'doesnt include itself as a neighbor', ->
 		env1.flipCell(0,0);
 		env1.flipCell(0,1);
@@ -1071,6 +1076,7 @@ xdescribe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(1,1);
 		env1.flipCell(2,0);
 		env1.flipCell(2,1);
+		env1.flipCell(1,0);
 		expect(env1.neighborCount(1,0)).toEqual 5
 	it 'bottom edge cell', ->
 		env1.flipCell(0,2);
@@ -1078,6 +1084,7 @@ xdescribe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(1,1);
 		env1.flipCell(2,1);
 		env1.flipCell(2,2);
+		env1.flipCell(1,2);
 		expect(env1.neighborCount(1,2)).toEqual 5
 	it 'right edge cell', ->
 		env1.flipCell(2,0);
@@ -1085,4 +1092,5 @@ xdescribe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(1,1);
 		env1.flipCell(1,2);
 		env1.flipCell(2,2);
+		env1.flipCell(2,1);
 		expect(env1.neighborCount(2,1)).toEqual 5
