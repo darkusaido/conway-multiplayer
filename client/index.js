@@ -99,6 +99,7 @@ $(document).ready(function documentReady(){
         runningText.show();
     });
 
+    //inconsistent looping of cells compared to socket.join 
     socket.on('nextGen', function socketNextGenerationHandler(generationNumber, cellsBorn, cellsDied){
         $('#generation-number').text(generationNumber);
         var uiCell;
@@ -127,6 +128,7 @@ $(document).ready(function documentReady(){
         runningText.hide();
     });
 
+    //unneccesary liveCells being passed
     socket.on('clear', function socketClearingHandler(liveCells, generationNumber){
         $('#generation-number').text(generationNumber);
         clearAllCells();

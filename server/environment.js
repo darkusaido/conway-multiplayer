@@ -6,19 +6,40 @@ var Cell = require('./cell.js');
 var _cells = Symbol();
 var _rows = Symbol();
 var _columns = Symbol();
+var _liveCells = Symbol();
+var _cellsBorn = Symbol();
+var _cellsDied = Symbol();
+var _generationNumber = Symbol();
 
 module.exports = class Environment {
 	constructor(rows, columns){
 		this[_rows] = rows; 
 		this[_columns] = columns;
 		this[_cells] = make2DArray(rows, columns);
+		this[_liveCells] = {};
+		this[_generationNumber] = 0;
 	}
 
 	get cells(){
 		return this[_cells];
 	}
 
-	//for internal use in the next generation method only, not properly type checking for performance reasons
+	get liveCells(){
+		return this[_liveCells];
+	}
+	get cellsBorn(){
+		return this[_cellsBorn];
+	}
+	get cellsDied(){
+		return this[_cellsDied];
+	}
+
+	get generationNumber(){
+		return this[_generationNumber];
+	}
+
+	//for internal use in the nextGeneration method only, not properly type checking since this 
+	//will likely be the main operation of the game loop, and will probs not be needed externally 
 	set cells(otherCells){
 		for(var i = 0; i < otherCells.length; i++){
 			var otherColumn = otherCells[i];
@@ -32,18 +53,41 @@ module.exports = class Environment {
 		if(x < 0 || x >= this[_columns] || y < 0 || y >= this[_rows]){
 			throw new RangeError("index out of bounds");
 		}
-		this[_cells][x][y].toggleLife();
+		var cell = this[_cells][x][y]; 
+		var wasAlive = cell.alive;
+		cell.toggleLife();
+		if(wasAlive){
+			delete this[_liveCells][cell.id];
+		}
+		else {
+			this[_liveCells][cell.id] = cell.clone();
+		}
 	}
 
 	nextGeneration(){
+		this[_generationNumber]++;
 		var nextEnv = new Environment(this[_rows], this[_columns]);
 		nextEnv.cells = this[_cells];
+		this[_cellsBorn] = {};
+		this[_cellsDied] = {};
 		for(var j = 0; j < this[_rows]; j++){
 			for(var i = 0; i < this[_columns]; i++){
-				var alive = this[_cells][i][j].alive;
+				var currCell = this[_cells][i][j];
+				var alive = currCell.alive;
 				var neighborCount = this.neighborCount(i,j);
-				if((alive && (neighborCount < 2 || neighborCount > 3)) || (!alive && neighborCount === 3)) {
+				if(alive && (neighborCount < 2 || neighborCount > 3)) {
 					nextEnv.flipCell(i,j);
+					delete this[_liveCells][currCell.id];
+					var clone = currCell.clone();
+					clone.toggleLife();
+					this[_cellsDied][currCell.id] = clone;
+				}
+				else if(!alive && neighborCount === 3){
+					nextEnv.flipCell(i,j);	
+					var clone = currCell.clone();
+					clone.toggleLife();
+					this[_liveCells][currCell.id] = clone;
+					this[_cellsBorn][currCell.id] = clone;
 				}
 			}
 		}
