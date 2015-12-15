@@ -83,11 +83,11 @@ $(document).ready(function documentReady(){
         }
         clearAllCells();
         for(cellKey in liveCells){
-            var cell = $('#' + liveCells[cellKey].id);
+            var cell = $('#' + cellKey);
             if(!cell.hasClass('live')){
                 cell.addClass('live');
             }
-            colorCell(cell, liveCells[cellKey]);
+            //colorCell(cell, liveCells[cellKey]);
         }
     });
 
@@ -99,20 +99,20 @@ $(document).ready(function documentReady(){
         runningText.show();
     });
 
-    //inconsistent looping of cells compared to socket.join 
-    socket.on('nextGen', function socketNextGenerationHandler(generationNumber, cellsBorn, cellsDied){
+    socket.on('nextGeneration', function socketNextGenerationHandler(generationNumber, cellsBorn, cellsDied){
+        console.log('client recieved nextGeneration event');
         $('#generation-number').text(generationNumber);
         var uiCell;
-        for(cell in cellsBorn){
-            uiCell = $('#' + cellsBorn[cell].id);
-            colorCell(uiCell, cellsBorn[cell]);
+        for(cellKey in cellsBorn){
+            uiCell = $('#' + cellKey);
+            //colorCell(uiCell, cellsBorn[cellKey]);
             if(!uiCell.hasClass('live')){
                 uiCell.addClass('live');
             }
         }
-        for(cell in cellsDied){
-            uiCell = $('#' + cellsDied[cell].id);
-            uiCell.css('background-color', "#eeeeee");
+        for(cellKey in cellsDied){
+            uiCell = $('#' + cellKey);
+            //uiCell.css('background-color', "#eeeeee");
 
             if(uiCell.hasClass('live')){
                 uiCell.removeClass('live');
@@ -128,33 +128,32 @@ $(document).ready(function documentReady(){
         runningText.hide();
     });
 
-    //unneccesary liveCells being passed
-    socket.on('clear', function socketClearingHandler(liveCells, generationNumber){
-        $('#generation-number').text(generationNumber);
+    socket.on('clear', function socketClearingHandler(){
+        $('#generation-number').text(0);
         clearAllCells();
     });
 
-    socket.on('life', function socketLifeHandler(cellObj){
-        id = cellObj.id;
-        console.log('life at ' + JSON.stringify(cellObj));
+    socket.on('life', function socketLifeHandler(id){
+        //id = cellObj.id;
+        //console.log('life at ' + JSON.stringify(cellObj));
         var cell = $('#' + id);
-        colorCell(cell, cellObj)
+        //colorCell(cell, cellObj)
         if(!cell.hasClass('live')){
             cell.addClass('live');
         }
     });
 
     socket.on('death', function socketDeathHandler(id){
-        console.log('death at ' + id);
+        //console.log('death at ' + id);
         var cell = $('#' + id);
-        cell.css('background-color', "#eeeeee");
+        //cell.css('background-color', "#eeeeee");
         if(cell.hasClass('live')){
             cell.removeClass('live');
         } 
     });
 
     var clearAllCells = function clearAllCellsHandler() {
-        $('.live').css('background-color', "#eeeeee");
+        //$('.live').css('background-color', "#eeeeee");
         $('.live').removeClass('live');
     }
 });    

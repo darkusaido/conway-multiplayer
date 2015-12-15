@@ -6,7 +6,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 var _ = require('lodash');
 var Cell = require('./cell.js');
-var Env = require('./environment.js');
+var Environment = require('./environment.js');
 
 var port = process.env.PORT || 5003;
 
@@ -17,39 +17,52 @@ app.get('/', function expressRootRouter(request, response){
 });
 
 var running = false;
-var environment = new Env(30,50);
+var rows = 30;
+var columns = 50;
+var env = new Environment(rows,columns);
+var interval;
 
 io.on('connection', function socketConnectionHandler(socket){
 	console.log('someone connected'); 
-	socket.emit('join', environment.liveCells, running, environment.generationNumber);
+	socket.emit('join', env.liveCells, running, env.generationNumber);
 
 	socket.on('stopping', function socketStoppingHandler(){
 		running = false;
 		io.sockets.emit('stopping');
+		clearInterval(interval);
 	});
 
 	socket.on('running', function socketRunningHandler(){
 		running = true;
 		io.sockets.emit('running');
-		game.initializeGame(liveCells);
-		game.runGame(io);
+		var update = function (){
+			console.log('running update function');
+			env.nextGeneration();
+			io.sockets.emit('nextGeneration', env.generationNumber, env.cellsBorn, env.cellsDied);
+		};
+		interval = setInterval(update, 80);
 	});
 
 	socket.on('clear', function socketClearingHandler(){
-		game.resetGame();
-		//io.sockets.emit('clear', liveCells, game.getGenerationNumber());
-		liveCells = {};
+		env = new Environment(rows,columns);
+		io.sockets.emit('clear');
 	});
 
 	socket.on('cell-selected', function socketCellSelectionHandler(id, color){
-		var rowCol = id.split('-');
-		console.log("cell with " + color);
+		var xY = id.split('-');
+		var x = xY[0];
+		var y = xY[1];
+		//console.log("cell with " + color);
 		//liveCells['cell' + id] = cellCreator.createCell(id, color, parseInt(rowCol[0], 10), parseInt(rowCol[1], 10), true, 0);
-		io.sockets.emit('life', liveCells['cell' + id]);
+		env.flipCell(x,y);
+		io.sockets.emit('life', id);
 	});
 
 	socket.on('cell-deselected', function socketCellDeselectionHandler(id){
-		delete liveCells['cell' + id];
+		var xY = id.split('-');
+		var x = xY[0];
+		var y = xY[1];
+		env.flipCell(x,y);
 		io.sockets.emit('death', id);
 	});
 
