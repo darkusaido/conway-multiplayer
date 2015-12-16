@@ -11,6 +11,9 @@ var _cellsBorn = Symbol();
 var _cellsDied = Symbol();
 var _generationNumber = Symbol();
 
+//constants
+var deadColor = '#eeeeee';
+
 module.exports = class Environment {
 	constructor(rows, columns){
 		this[_rows] = rows; 
@@ -60,8 +63,20 @@ module.exports = class Environment {
 			delete this[_liveCells][cell.id];
 		}
 		else {
-			this[_liveCells][cell.id] = cell.clone();
+			this[_liveCells][cell.id] = cell.color;
 		}
+	}
+
+	setCellColor(x, y, color){
+		if(x < 0 || x >= this[_columns] || y < 0 || y >= this[_rows]){
+			throw new RangeError("index out of bounds");
+		}
+		this[_cells][x][y].color = color;
+	}
+
+	setColorAndFlipCell(x, y, color){
+		this.setCellColor(x,y,color);
+		this.flipCell(x,y);
 	}
 
 	nextGeneration(){
@@ -74,43 +89,59 @@ module.exports = class Environment {
 			for(var i = 0; i < this[_columns]; i++){
 				var currCell = this[_cells][i][j];
 				var alive = currCell.alive;
-				var neighborCount = this.neighborCount(i,j);
+				var neighborCountAndColor = this.neighborCountAndAverageColor(i,j);
+				var neighborCount = neighborCountAndColor.count;
+				var averageColor = neighborCountAndColor.color;
 				if(alive && (neighborCount < 2 || neighborCount > 3)) {
-					nextEnv.flipCell(i,j);
+					nextEnv.setColorAndFlipCell(i,j,deadColor);
 					delete this[_liveCells][currCell.id];
-					var clone = currCell.clone();
-					clone.toggleLife();
-					this[_cellsDied][currCell.id] = clone;
+					//passing 0 as value because the cell id passed as the key expresses enough information
+					this[_cellsDied][currCell.id] = 0;
 				}
 				else if(!alive && neighborCount === 3){
-					nextEnv.flipCell(i,j);	
-					var clone = currCell.clone();
-					clone.toggleLife();
-					this[_liveCells][currCell.id] = clone;
-					this[_cellsBorn][currCell.id] = clone;
+					nextEnv.setColorAndFlipCell(i,j,averageColor);
+					//the client only needs to know the color
+					this[_liveCells][currCell.id] = averageColor;
+					this[_cellsBorn][currCell.id] = averageColor;
 				}
 			}
 		}
 		this[_cells] = nextEnv.cells;
 	}
 
-	neighborCount(x,y){
+	//violates sigle responsability principle, but avoids passing through entire grid twice
+	//returns how many neighbors, and the average color of all live neighbors
+	neighborCountAndAverageColor(x,y){
 		if(x < 0 || x >= this[_columns] || y < 0 || y >= this[_rows]){
 			throw new RangeError("index out of bounds");
 		}
 		var neighbors = this[_cells].slice(x-1<0?0:x-1, x+2).map(function(subArr){return subArr.slice(y-1<0?0:y-1, y+2);});
-		var count = 0; 
+		var count = 0;
+		var averageR = 0;
+		var averageG = 0;
+		var averageB = 0;
 		for(var i = 0; i < neighbors.length; i++){
 			for(var j = 0; j < neighbors[i].length; j++){
-				if(neighbors[i][j].alive){
+				var neighbor = neighbors[i][j]; 
+				if(neighbor.alive){
 					count++;
+					averageR += neighbor.r; 
+					averageG += neighbor.g; 
+					averageB += neighbor.b; 
 				}
 			}
 		}
 		if(this[_cells][x][y].alive){
 			count--;
 		}
-		return count;
+		averageR = averageR/count | 0;
+		averageG = averageG/count | 0;
+		averageB = averageB/count | 0;
+		var color = rgbToHex(averageR, averageG, averageB);
+		return {
+			'count': count,
+			'color': color
+		};
 	}
 
 	cellsEquals(otherCells){
@@ -152,4 +183,13 @@ function make2DArray(rows, columns){
 		}
 	}
 	return arr;
+}
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }

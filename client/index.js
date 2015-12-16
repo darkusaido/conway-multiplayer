@@ -8,11 +8,6 @@ $(document).ready(function documentReady(){
     var runningText = $('#running-text');
     var userColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
 
-    var colorCell = function($cell, cell) {
-        $cell.css('background-color', cell.color);
-        console.log($cell + " is being set to " + cell.color);
-    }
-
     $(this).mousedown(function mouseIsDownSetter() {
         mouseIsDown = true;
     }).mouseup(function mouseIsUpSetter() {
@@ -86,8 +81,8 @@ $(document).ready(function documentReady(){
             var cell = $('#' + cellKey);
             if(!cell.hasClass('live')){
                 cell.addClass('live');
+                cell.css('background-color', liveCells[cellKey]);
             }
-            //colorCell(cell, liveCells[cellKey]);
         }
     });
 
@@ -105,17 +100,16 @@ $(document).ready(function documentReady(){
         var uiCell;
         for(cellKey in cellsBorn){
             uiCell = $('#' + cellKey);
-            //colorCell(uiCell, cellsBorn[cellKey]);
             if(!uiCell.hasClass('live')){
                 uiCell.addClass('live');
+                uiCell.css('background-color', cellsBorn[cellKey]);
             }
         }
         for(cellKey in cellsDied){
             uiCell = $('#' + cellKey);
-            //uiCell.css('background-color', "#eeeeee");
-
             if(uiCell.hasClass('live')){
                 uiCell.removeClass('live');
+                uiCell.css('background-color', "#eeeeee");
             }    
         }
     });
@@ -133,27 +127,24 @@ $(document).ready(function documentReady(){
         clearAllCells();
     });
 
-    socket.on('life', function socketLifeHandler(id){
-        //id = cellObj.id;
-        //console.log('life at ' + JSON.stringify(cellObj));
+    socket.on('life', function socketLifeHandler(id, color){
         var cell = $('#' + id);
-        //colorCell(cell, cellObj)
         if(!cell.hasClass('live')){
             cell.addClass('live');
+            cell.css('background-color', color);
         }
     });
 
     socket.on('death', function socketDeathHandler(id){
-        //console.log('death at ' + id);
         var cell = $('#' + id);
-        //cell.css('background-color', "#eeeeee");
         if(cell.hasClass('live')){
             cell.removeClass('live');
+            cell.css('background-color', '#eeeeee');
         } 
     });
 
     var clearAllCells = function clearAllCellsHandler() {
-        //$('.live').css('background-color', "#eeeeee");
+        $('.live').css('background-color', "#eeeeee");
         $('.live').removeClass('live');
     }
 });    

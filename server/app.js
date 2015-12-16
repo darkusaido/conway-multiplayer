@@ -21,6 +21,7 @@ var rows = 30;
 var columns = 50;
 var env = new Environment(rows,columns);
 var interval;
+var deadColor = '#eeeeee'
 
 io.on('connection', function socketConnectionHandler(socket){
 	console.log('someone connected'); 
@@ -36,7 +37,6 @@ io.on('connection', function socketConnectionHandler(socket){
 		running = true;
 		io.sockets.emit('running');
 		var update = function (){
-			console.log('running update function');
 			env.nextGeneration();
 			io.sockets.emit('nextGeneration', env.generationNumber, env.cellsBorn, env.cellsDied);
 		};
@@ -52,17 +52,15 @@ io.on('connection', function socketConnectionHandler(socket){
 		var xY = id.split('-');
 		var x = xY[0];
 		var y = xY[1];
-		//console.log("cell with " + color);
-		//liveCells['cell' + id] = cellCreator.createCell(id, color, parseInt(rowCol[0], 10), parseInt(rowCol[1], 10), true, 0);
-		env.flipCell(x,y);
-		io.sockets.emit('life', id);
+		env.setColorAndFlipCell(x,y,color);
+		io.sockets.emit('life', id, color);
 	});
 
 	socket.on('cell-deselected', function socketCellDeselectionHandler(id){
 		var xY = id.split('-');
 		var x = xY[0];
 		var y = xY[1];
-		env.flipCell(x,y);
+		env.setColorAndFlipCell(x,y,deadColor);
 		io.sockets.emit('death', id);
 	});
 

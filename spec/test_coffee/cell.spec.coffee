@@ -17,7 +17,7 @@ describe 'constructor should ', ->
 describe 'toString should', ->
 	it 'return string in correct format', ->
 		cell = new Cell(3,3)
-		expectedString = "x:3 y:3 alive:0"
+		expectedString = "x:3 y:3 alive:0 color:#eeeeee"
 		expect(cell.toString()).toEqual expectedString
 		expect(1).toBe 1
 
