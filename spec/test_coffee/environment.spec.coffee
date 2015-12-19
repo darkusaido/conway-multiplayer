@@ -3,6 +3,9 @@ Cell = require '../../server/cell.js'
 helper = require '../helpers/environmentHelper.js'
 _ = require 'lodash'
 
+#constants
+deadColor = '#eeeeee';
+
 describe 'constructor should ', ->
 	env1 = {}
 	env2 = {}
@@ -107,9 +110,9 @@ describe 'flipCell should ', ->
 		cell11.toggleLife()
 		cell22.toggleLife()
 		expectedLiveCells = {
-								'0-0': cell00
-								'1-1': cell11
-								'2-2': cell22
+								'0-0': deadColor
+								'1-1': deadColor
+								'2-2': deadColor
 							}
 		expect(helper.cellsObjectsEquals(env1.liveCells,expectedLiveCells)).toBeTruthy()
 	it 'remove cell from liveCells if it is going from alive to !alive', ->
@@ -294,13 +297,13 @@ describe 'nextGeneration should update cells according to games of life rules ',
 			cell51.toggleLife()
 			cell52.toggleLife()
 			expectedLiveCells = {
-									'1-0': cell10
-									'1-1': cell11
-									'1-2': cell12
-									'4-1': cell41
-									'4-2': cell42
-									'5-1': cell51
-									'5-2': cell52
+									'1-0': deadColor
+									'1-1': deadColor
+									'1-2': deadColor
+									'4-1': deadColor
+									'4-2': deadColor
+									'5-1': deadColor
+									'5-2': deadColor
 								}
 			expect(helper.cellsObjectsEquals(env1.liveCells,expectedLiveCells)).toBeTruthy()
 			env1.nextGeneration()
@@ -308,13 +311,13 @@ describe 'nextGeneration should update cells according to games of life rules ',
 			cell01.toggleLife()
 			cell21.toggleLife()
 			expectedLiveCells = {
-									'0-1': cell01
-									'1-1': cell11
-									'2-1': cell21
-									'4-1': cell41
-									'4-2': cell42
-									'5-1': cell51
-									'5-2': cell52
+									'0-1': deadColor
+									'1-1': deadColor
+									'2-1': deadColor
+									'4-1': deadColor
+									'4-2': deadColor
+									'5-1': deadColor
+									'5-2': deadColor
 								}
 			expect(helper.cellsObjectsEquals(env1.liveCells,expectedLiveCells)).toBeTruthy()
 	describe 'and increments generationNumber ', ->
@@ -350,12 +353,12 @@ describe 'nextGeneration should update cells according to games of life rules ',
 			cell21.toggleLife()
 			env.nextGeneration()
 			expectedCellsBorn = {
-									'0-1': cell01
-									'2-1': cell21
+									'0-1': deadColor
+									'2-1': deadColor
 								}
 			expectedCellsDied = {
-									'1-0': cell10
-									'1-2': cell12
+									'1-0': 0
+									'1-2': 0
 								}
 			expect(helper.cellsObjectsEquals(env.cellsBorn, expectedCellsBorn)).toBeTruthy()
 			expect(helper.cellsObjectsEquals(env.cellsDied, expectedCellsDied)).toBeTruthy()
@@ -1161,30 +1164,30 @@ describe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(0,1)
 		env1.flipCell(1,1)
 		env1.flipCell(1,0)
-		expect(env1.neighborCount(0,0)).toEqual 3
+		expect(env1.neighborCountAndAverageColor(0,0).count).toEqual 3
 	it 'top-right corner cell', ->
 		env1.flipCell(0,1)
 		env1.flipCell(1,1)
 		env1.flipCell(1,0)
-		expect(env1.neighborCount(2,0)).toEqual 2
+		expect(env1.neighborCountAndAverageColor(2,0).count).toEqual 2
 	it 'bottom-right corner cell', ->
 		env1.flipCell(1,1)
-		expect(env1.neighborCount(2,2)).toEqual 1
+		expect(env1.neighborCountAndAverageColor(2,2).count).toEqual 1
 	it 'bottom-left corner cell', ->
 		env1.flipCell(0,1)
 		env1.flipCell(1,2)
-		expect(env1.neighborCount(0,2)).toEqual 2
+		expect(env1.neighborCountAndAverageColor(0,2).count).toEqual 2
 		env2 = {}
 		env2 = new Env(3,3)
 		env2.flipCell(1,1)
 		env2.flipCell(0,2)
-		expect(env2.neighborCount(0,2)).toEqual 1
+		expect(env2.neighborCountAndAverageColor(0,2).count).toEqual 1
 	it 'doesnt include itself as a neighbor', ->
 		env1.flipCell(0,0)
 		env1.flipCell(0,1)
 		env1.flipCell(1,1)
 		env1.flipCell(1,0)
-		expect(env1.neighborCount(0,0)).toEqual 3
+		expect(env1.neighborCountAndAverageColor(0,0).count).toEqual 3
 	it 'center cell', ->
 		env1.flipCell(0,0)
 		env1.flipCell(0,1)
@@ -1195,14 +1198,14 @@ describe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(2,0)
 		env1.flipCell(2,1)
 		env1.flipCell(2,2)
-		expect(env1.neighborCount(1,1)).toEqual 8
+		expect(env1.neighborCountAndAverageColor(1,1).count).toEqual 8
 	it 'left edge cell', ->
 		env1.flipCell(0,0)
 		env1.flipCell(1,0)
 		env1.flipCell(1,1)
 		env1.flipCell(0,2)
 		env1.flipCell(1,2)
-		expect(env1.neighborCount(0,1)).toEqual 5
+		expect(env1.neighborCountAndAverageColor(0,1).count).toEqual 5
 	it 'top edge cell', ->
 		env1.flipCell(0,0)
 		env1.flipCell(0,1)
@@ -1210,7 +1213,7 @@ describe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(2,0)
 		env1.flipCell(2,1)
 		env1.flipCell(1,0)
-		expect(env1.neighborCount(1,0)).toEqual 5
+		expect(env1.neighborCountAndAverageColor(1,0).count).toEqual 5
 	it 'bottom edge cell', ->
 		env1.flipCell(0,2)
 		env1.flipCell(0,1)
@@ -1218,7 +1221,7 @@ describe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(2,1)
 		env1.flipCell(2,2)
 		env1.flipCell(1,2)
-		expect(env1.neighborCount(1,2)).toEqual 5
+		expect(env1.neighborCountAndAverageColor(1,2).count).toEqual 5
 	it 'right edge cell', ->
 		env1.flipCell(2,0)
 		env1.flipCell(1,0)
@@ -1226,4 +1229,4 @@ describe 'neighborCount should return correct number of neighbors ', ->
 		env1.flipCell(1,2)
 		env1.flipCell(2,2)
 		env1.flipCell(2,1)
-		expect(env1.neighborCount(2,1)).toEqual 5
+		expect(env1.neighborCountAndAverageColor(2,1).count).toEqual 5
