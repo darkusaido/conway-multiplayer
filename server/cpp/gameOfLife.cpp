@@ -347,15 +347,15 @@ namespace node {
 			return;
 		}
 
-		if (!args[0]->IsNumber() || !args[1]->IsNumber() || !args[2]->IsString()) {
+		if (!args[0]->IsString() || !args[1]->IsString() || !args[2]->IsString()) {
 			isolate->ThrowException(Exception::TypeError(
 				String::NewFromUtf8(isolate, "Wrong arguments: expecting number, number, and string")));
 			return;
 		}
 
-		auto x = (int)std::round(args[0]->NumberValue());
-		auto y = (int)std::round(args[1]->NumberValue());
-		v8::String::Utf8Value colorString(args[2]->ToString());
+	    auto x = stoi(std::string(*String::Utf8Value(args[0])));
+		auto y = stoi(std::string(*String::Utf8Value(args[1])));
+		v8::String::Utf8Value colorString(args[2]);
 		gol::Color color = env->hexStringToColor(std::string(*colorString));
 		env->setColorAndFlipCell(x, y, color);
 	}

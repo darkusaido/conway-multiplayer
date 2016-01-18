@@ -57,6 +57,7 @@ io.on('connection', function socketConnectionHandler(socket){
 		var xY = id.split('-');
 		var x = xY[0];
 		var y = xY[1];
+		gol.setColorAndFlipCell(x,y,color);
 		env.setColorAndFlipCell(x,y,color);
 		io.sockets.emit('life', id, color);
 	});
@@ -65,6 +66,7 @@ io.on('connection', function socketConnectionHandler(socket){
 		var xY = id.split('-');
 		var x = xY[0];
 		var y = xY[1];
+		//gol.setColorAndFlipCell(x,y,deadColor);
 		env.setColorAndFlipCell(x,y,deadColor);
 		io.sockets.emit('death', id);
 	});

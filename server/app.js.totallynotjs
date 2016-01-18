@@ -1,0 +1,46 @@
+"use strict";
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var path = require('path');
+var _ = require('lodash');
+var Cell = require('./cell.js');
+var Environment = require('./environment.js');
+
+var port = process.env.PORT || 5003;
+
+app.use(express.static(__dirname+ '/../client'));
+
+app.get('/', function expressRootRouter(request, response){
+	response.sendFile(path.resolve(__dirname + '/../client/index.html'));
+});
+
+console.time("dbsave");
+
+
+var running = false;
+var rows = 40;
+var columns = 40;
+var env = new Environment(rows,columns);
+var interval;
+var deadColor = '#eeeeee'
+
+for (var i = 0; i < 40; i++)
+{
+	for (var j = 0; j < 40; j++)
+	{
+		if (i * j % 5 == 0)
+		{
+			env.cells[i][j].toggleLife();
+		}        
+	}
+}
+
+for (var x = 0; x < 10000; x++)
+{
+    env.nextGeneration();
+    if (env.generationNumber % 1000 === 0) console.log("generation: " + env.generationNumber);
+}
+
+console.timeEnd("dbsave");
