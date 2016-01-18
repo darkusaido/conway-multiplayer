@@ -7,6 +7,7 @@ var path = require('path');
 var _ = require('lodash');
 var Cell = require('./cell.js');
 var Environment = require('./environment.js');
+var gol = require('./cpp/build/Release/gol.node');
 
 var port = process.env.PORT || 5003;
 
@@ -22,6 +23,7 @@ var columns = 50;
 var env = new Environment(rows,columns);
 var interval;
 var deadColor = '#eeeeee'
+gol.createNewEnvironment(rows, columns);
 
 io.on('connection', function socketConnectionHandler(socket){
 	console.log('someone connected'); 
@@ -36,7 +38,9 @@ io.on('connection', function socketConnectionHandler(socket){
 	socket.on('running', function socketRunningHandler(){
 		running = true;
 		io.sockets.emit('running');
-		var update = function (){
+        var update = function (){
+            gol.nextGeneration();
+            console.log(gol.getGenerationNumber());
 			env.nextGeneration();
 			io.sockets.emit('nextGeneration', env.generationNumber, env.cellsBorn, env.cellsDied);
 		};
@@ -44,7 +48,8 @@ io.on('connection', function socketConnectionHandler(socket){
 	});
 
 	socket.on('clear', function socketClearingHandler(){
-		env = new Environment(rows,columns);
+        gol.createNewEnvironment(rows, columns);
+        env = new Environment(rows, columns);
 		io.sockets.emit('clear');
 	});
 

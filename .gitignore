@@ -28,3 +28,13 @@ node_modules
 
 #bower dependencies
 bower_components
+
+#visual studio user files#
+.vs
+.ntvs_analysis.dat
+*.suo
+*.sdf
+
+#node addon build logs#
+*.tlog
+/**/gol.tlog/
