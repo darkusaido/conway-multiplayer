@@ -4,10 +4,9 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
-var _ = require('lodash');
 var Cell = require('./cell.js');
 var Environment = require('./environment.js');
-var gol = require('./cpp/build/Release/gol.node');
+var gol = require('./cpp/build/Debug/gol.node');
 
 var port = process.env.PORT || 5003;
 
@@ -20,14 +19,15 @@ app.get('/', function expressRootRouter(request, response){
 var running = false;
 var rows = 30;
 var columns = 50;
-var env = new Environment(rows,columns);
+//var env = new Environment(rows,columns);
 var interval;
 var deadColor = '#eeeeee'
 gol.createNewEnvironment(rows, columns);
 
 io.on('connection', function socketConnectionHandler(socket){
 	console.log('someone connected'); 
-	socket.emit('join', env.liveCells, running, env.generationNumber);
+    //socket.emit('join', env.liveCells, running, env.generationNumber);
+    socket.emit('join', gol.getLiveCells(), running, gol.getGenerationNumber());
 
 	socket.on('stopping', function socketStoppingHandler(){
 		running = false;
@@ -41,15 +41,16 @@ io.on('connection', function socketConnectionHandler(socket){
         var update = function (){
             gol.nextGeneration();
             console.log(gol.getGenerationNumber());
-			env.nextGeneration();
-			io.sockets.emit('nextGeneration', env.generationNumber, env.cellsBorn, env.cellsDied);
+			//env.nextGeneration();
+            //io.sockets.emit('nextGeneration', env.generationNumber, env.cellsBorn, env.cellsDied);
+            io.sockets.emit('nextGeneration', gol.getGenerationNumber(), gol.getCellsBorn(), gol.getCellsDied());
 		};
 		interval = setInterval(update, 80);
 	});
 
 	socket.on('clear', function socketClearingHandler(){
         gol.createNewEnvironment(rows, columns);
-        env = new Environment(rows, columns);
+        //env = new Environment(rows, columns);
 		io.sockets.emit('clear');
 	});
 
@@ -58,7 +59,7 @@ io.on('connection', function socketConnectionHandler(socket){
 		var x = xY[0];
 		var y = xY[1];
 		gol.setColorAndFlipCell(x,y,color);
-		env.setColorAndFlipCell(x,y,color);
+		//env.setColorAndFlipCell(x,y,color);
 		io.sockets.emit('life', id, color);
 	});
 
@@ -66,8 +67,8 @@ io.on('connection', function socketConnectionHandler(socket){
 		var xY = id.split('-');
 		var x = xY[0];
 		var y = xY[1];
-		//gol.setColorAndFlipCell(x,y,deadColor);
-		env.setColorAndFlipCell(x,y,deadColor);
+		gol.setColorAndFlipCell(x,y,deadColor);
+		//env.setColorAndFlipCell(x,y,deadColor);
 		io.sockets.emit('death', id);
 	});
 

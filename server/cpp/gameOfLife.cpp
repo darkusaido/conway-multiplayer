@@ -254,6 +254,21 @@ namespace gol {
 		{
 			return _Columns;
 		}
+
+		std::map<int, unsigned long> getLiveCells() const
+		{
+			return *_LiveCells;
+		}
+
+		std::map<int, unsigned long> getCellsBorn() const 
+		{
+			return *_CellsBorn;
+		}
+
+		std::map<int, unsigned long> getCellsDied() const 
+		{
+			return *_CellsDied;
+		}
 	};
 }
 //int main()
@@ -360,17 +375,41 @@ namespace node {
 		env->setColorAndFlipCell(x, y, color);
 	}
 
-	void hello(const FunctionCallbackInfo<Value>& args) {
+	Local<Object> mapToJSObject(std::map<int, unsigned long> map, Isolate* isolate) {
+		Local<Object> obj = Object::New(isolate);
+		for (std::map<int, unsigned long>::iterator it = map.begin(); it != map.end(); ++it)
+		{
+			obj->Set(String::NewFromUtf8(isolate, &std::to_string(it->first)[0]),
+				String::NewFromUtf8(isolate, &std::to_string(it->second)[0]));
+		}
+		return obj;
+	}
+
+	void getLiveCells(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
-		args.GetReturnValue().Set(String::NewFromUtf8(isolate, "hello world"));
+		args.GetReturnValue().Set(mapToJSObject(env->getLiveCells(), isolate));
+	}
+
+	void getCellsBorn(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+		auto genNumber = env->getGen();
+		args.GetReturnValue().Set(mapToJSObject(env->getCellsBorn(), isolate));
+	}
+
+	void getCellsDied(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+		auto genNumber = env->getGen();
+		args.GetReturnValue().Set(mapToJSObject(env->getCellsDied(), isolate));
 	}
 
 	void init(Local<Object> exports) {
-		NODE_SET_METHOD(exports, "hello", hello);
 		NODE_SET_METHOD(exports, "createNewEnvironment", createNewEnvironment);
 		NODE_SET_METHOD(exports, "nextGeneration", nextGeneration);
 		NODE_SET_METHOD(exports, "getGenerationNumber", getGenerationNumber);
 		NODE_SET_METHOD(exports, "setColorAndFlipCell", setColorAndFlipCell);
+		NODE_SET_METHOD(exports, "getLiveCells", getLiveCells);
+		NODE_SET_METHOD(exports, "getCellsBorn", getCellsBorn);
+		NODE_SET_METHOD(exports, "getCellsDied", getCellsDied);
 	}
 
 	NODE_MODULE(gol, init)

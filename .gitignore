@@ -34,6 +34,7 @@ bower_components
 .ntvs_analysis.dat
 *.suo
 *.sdf
+*.open.db
 
 #node addon build logs#
 *.tlog
