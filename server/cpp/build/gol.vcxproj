@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{74E562B2-8453-DF1C-228C-102D2C404440}</ProjectGuid>
+    <ProjectGuid>{C34BF1BB-AB9E-C652-4948-74C5947AAF88}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>gol</RootNamespace>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
@@ -47,7 +47,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Jorge\.node-gyp\4.2.3\include\node;C:\Users\Jorge\.node-gyp\4.2.3\src;C:\Users\Jorge\.node-gyp\4.2.3\deps\uv\include;C:\Users\Jorge\.node-gyp\4.2.3\deps\v8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\GregoryHor\.node-gyp\4.2.4\include\node;C:\Users\GregoryHor\.node-gyp\4.2.4\src;C:\Users\GregoryHor\.node-gyp\4.2.4\deps\uv\include;C:\Users\GregoryHor\.node-gyp\4.2.4\deps\v8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <CompileAsWinRT>false</CompileAsWinRT>
@@ -66,7 +66,7 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;DelayImp.lib;&quot;C:\Users\Jorge\.node-gyp\4.2.3\$(Configuration)\node.lib&quot;</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;DelayImp.lib;&quot;C:\Users\GregoryHor\.node-gyp\4.2.4\$(Configuration)\node.lib&quot;</AdditionalDependencies>
       <AdditionalOptions>/ignore:4199 %(AdditionalOptions)</AdditionalOptions>
       <AllowIsolation>true</AllowIsolation>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -81,13 +81,13 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>C:\Users\Jorge\.node-gyp\4.2.3\include\node;C:\Users\Jorge\.node-gyp\4.2.3\src;C:\Users\Jorge\.node-gyp\4.2.3\deps\uv\include;C:\Users\Jorge\.node-gyp\4.2.3\deps\v8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\GregoryHor\.node-gyp\4.2.4\include\node;C:\Users\GregoryHor\.node-gyp\4.2.4\src;C:\Users\GregoryHor\.node-gyp\4.2.4\deps\uv\include;C:\Users\GregoryHor\.node-gyp\4.2.4\deps\v8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NODE_GYP_MODULE_NAME=gol;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_HAS_EXCEPTIONS=0;BUILDING_V8_SHARED=1;BUILDING_UV_SHARED=1;BUILDING_NODE_EXTENSION;DEBUG;_DEBUG;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Jorge\.node-gyp\4.2.3\include\node;C:\Users\Jorge\.node-gyp\4.2.3\src;C:\Users\Jorge\.node-gyp\4.2.3\deps\uv\include;C:\Users\Jorge\.node-gyp\4.2.3\deps\v8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\GregoryHor\.node-gyp\4.2.4\include\node;C:\Users\GregoryHor\.node-gyp\4.2.4\src;C:\Users\GregoryHor\.node-gyp\4.2.4\deps\uv\include;C:\Users\GregoryHor\.node-gyp\4.2.4\deps\v8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <CompileAsWinRT>false</CompileAsWinRT>
@@ -114,7 +114,7 @@
       <AdditionalOptions>/LTCG %(AdditionalOptions)</AdditionalOptions>
     </Lib>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;DelayImp.lib;&quot;C:\Users\Jorge\.node-gyp\4.2.3\$(Configuration)\node.lib&quot;</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;DelayImp.lib;&quot;C:\Users\GregoryHor\.node-gyp\4.2.4\$(Configuration)\node.lib&quot;</AdditionalDependencies>
       <AdditionalOptions>/ignore:4199 %(AdditionalOptions)</AdditionalOptions>
       <AllowIsolation>true</AllowIsolation>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -132,7 +132,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>C:\Users\Jorge\.node-gyp\4.2.3\include\node;C:\Users\Jorge\.node-gyp\4.2.3\src;C:\Users\Jorge\.node-gyp\4.2.3\deps\uv\include;C:\Users\Jorge\.node-gyp\4.2.3\deps\v8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\GregoryHor\.node-gyp\4.2.4\include\node;C:\Users\GregoryHor\.node-gyp\4.2.4\src;C:\Users\GregoryHor\.node-gyp\4.2.4\deps\uv\include;C:\Users\GregoryHor\.node-gyp\4.2.4\deps\v8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NODE_GYP_MODULE_NAME=gol;WIN32;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_HAS_EXCEPTIONS=0;BUILDING_V8_SHARED=1;BUILDING_UV_SHARED=1;BUILDING_NODE_EXTENSION;%(PreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
   </ItemDefinitionGroup>
@@ -141,7 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gameOfLife.cpp"/>
-    <ClCompile Include="C:\Users\Jorge\AppData\Roaming\npm\node_modules\node-gyp\src\win_delay_load_hook.c"/>
+    <ClCompile Include="C:\Users\GregoryHor\AppData\Roaming\npm\node_modules\node-gyp\src\win_delay_load_hook.c"/>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
   <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets"/>

@@ -43,7 +43,9 @@ io.on('connection', function socketConnectionHandler(socket){
             console.log(gol.getGenerationNumber());
 			//env.nextGeneration();
             //io.sockets.emit('nextGeneration', env.generationNumber, env.cellsBorn, env.cellsDied);
-            io.sockets.emit('nextGeneration', gol.getGenerationNumber(), gol.getCellsBorn(), gol.getCellsDied());
+            var cellsBorn = gol.getCellsBorn();
+            var cellsDied = gol.getCellsDied();
+            io.sockets.emit('nextGeneration', gol.getGenerationNumber(), cellsBorn, cellsDied);
 		};
 		interval = setInterval(update, 80);
 	});

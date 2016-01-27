@@ -19,7 +19,7 @@ namespace gol {
 
 		bool alive() const
 		{
-			return false;
+			return isAlive;
 		}
 
 		void toggleLife()
@@ -47,7 +47,7 @@ namespace gol {
 		bool isAlive = false;
 	};
 
-	typedef Cell* CellGrid;
+	typedef std::vector<Cell> CellGrid;
 
 	struct CountAndColor
 	{
@@ -82,12 +82,11 @@ namespace gol {
 			_Rows(rows),
 			_Columns(columns)
 		{
-			_Cells = new Cell[rows * columns];
-			_OldCells = nullptr;
+            _Cells.resize(rows * columns);
 
 			for (auto i = 0; i < _Columns * _Rows; i++)
 			{
-				_Cells[i].id = i;
+                _Cells[i].id = i;
 			}
 
 			_CellsBorn = std::make_shared<CellsColor>();
@@ -95,14 +94,14 @@ namespace gol {
 			_LiveCells = std::make_shared<CellsColor>();
 		}
 
-		Cell* getCell(int x, int y) const
+		Cell* getCell(int x, int y)
 		{
-			return &_Cells[x * _Columns + y];
+			return &_Cells[x * _Rows + y];
 		}
 
-		Cell* getOldCell(int x, int y) const
+		Cell* getOldCell(int x, int y)
 		{
-			return &_OldCells[x * _Columns + y];
+			return &_OldCells[x * _Rows + y];
 		}
 
 		void NextGeneration()
@@ -111,8 +110,9 @@ namespace gol {
 			_CellsBorn->clear();
 			_CellsDied->clear();
 
-			_OldCells = new Cell[_Columns * _Rows];
-			memcpy(_OldCells, _Cells, _Columns * _Rows * sizeof(Cell));
+            auto size = _Columns * _Rows;
+            _OldCells.resize(size);
+            memcpy(&_OldCells[0], &_Cells[0], size * sizeof(Cell));
 
 			for (auto j = 0; j < _Rows; j++)
 			{
@@ -138,9 +138,6 @@ namespace gol {
 					}
 				}
 			}
-
-			delete _OldCells;
-
 		}
 
 		void setColorAndFlipCell(int x, int y, Color color)
@@ -196,15 +193,15 @@ namespace gol {
 			{
 				ApplyNeighborValues(x - 1, y, count, averageR, averageG, averageB);
 			}
-			else if (x < _Columns - 1)
+			if (x < _Columns - 1)
 			{
 				ApplyNeighborValues(x + 1, y, count, averageR, averageG, averageB);
 			}
-			else if (y > 0)
+			if (y > 0)
 			{
 				ApplyNeighborValues(x, y - 1, count, averageR, averageG, averageB);
 			}
-			else if (x < _Rows - 1)
+			if (x < _Rows - 1)
 			{
 				ApplyNeighborValues(x, y + 1, count, averageR, averageG, averageB);
 			}

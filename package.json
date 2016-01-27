@@ -15,6 +15,7 @@
     "bower": "^1.4.1",
     "express": "^4.13.3",
     "lodash": "^3.10.1",
+    "nan": "^2.2.0",
     "socket.io": "^1.4.4"
   },
   "devDependencies": {
