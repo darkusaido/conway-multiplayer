@@ -2,7 +2,7 @@
 {
   "target_defaults": {
     "cflags": [],
-    "default_configuration": "Debug",
+    "default_configuration": "Release",
     "defines": [],
     "include_dirs": [],
     "libraries": []
@@ -41,9 +41,9 @@
     "v8_no_strict_aliasing": 1,
     "v8_optimized_debug": 0,
     "v8_random_seed": 0,
-    "v8_use_snapshot": "true",
+    "v8_use_snapshot": 1,
     "want_separate_host_toolset": 1,
-    "nodedir": "C:\\Users\\GregoryHor\\.node-gyp\\4.2.4",
+    "nodedir": "C:\\Users\\Jorge\\.node-gyp\\4.2.3",
     "copy_dev_lib": "true",
     "standalone_static_library": 1
   }

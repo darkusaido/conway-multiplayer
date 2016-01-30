@@ -39,3 +39,6 @@ bower_components
 #node addon build logs#
 *.tlog
 /**/gol.tlog/
+.opendb
+*.vcxproj
+*.filters

@@ -8,7 +8,7 @@
 
 namespace gol {
 	typedef unsigned long Color;
-	typedef std::map<int, Color> CellsColor;
+	typedef std::map<std::string, Color> CellsColor;
 
 	class Cell
 	{
@@ -40,7 +40,14 @@ namespace gol {
 			return (color & 0xFF);
 		}
 
-		int id = 0;
+		int row = 0;
+		int col = 0;
+
+		std::string id() const
+		{
+			return std::to_string(row) + "-" + std::to_string(col);
+		}
+
 		Color color = 0x0;
 
 	private:
@@ -86,7 +93,9 @@ namespace gol {
 
 			for (auto i = 0; i < _Columns * _Rows; i++)
 			{
-                _Cells[i].id = i;
+				_Cells[i].col = (int)(i/_Columns);
+				auto remainder = i % _Columns;
+				_Cells[i].row = remainder ? remainder - 1 : _Columns - 1;
 			}
 
 			_CellsBorn = std::make_shared<CellsColor>();
@@ -125,16 +134,16 @@ namespace gol {
 					if (alive && (neighbor.count < 2 || neighbor.count > 3))
 					{
 						setColorAndFlipCell(i, j, deadColor);
-						_LiveCells->erase(currCell->id);
+						_LiveCells->erase(currCell->id());
 						//passing 0 as value because the cell id passed as the key expresses enough information
-						_CellsDied->insert_or_assign(currCell->id, 0x000000);
+						_CellsDied->insert_or_assign(currCell->id(), 0x000000);
 					}
 					else if (!alive && neighbor.count == 3)
 					{
 						setColorAndFlipCell(i, j, averageColor);
 						//the client only needs to know the color
-						_LiveCells->insert_or_assign(currCell->id, averageColor);
-						_CellsBorn->_Insert_or_assign(currCell->id, averageColor);
+						_LiveCells->insert_or_assign(currCell->id(), averageColor);
+						_CellsBorn->_Insert_or_assign(currCell->id(), averageColor);
 					}
 				}
 			}
@@ -161,10 +170,10 @@ namespace gol {
 			auto wasAlive = cell->alive();
 			cell->toggleLife();
 			if (wasAlive) {
-				_LiveCells->erase(cell->id);
+				_LiveCells->erase(cell->id());
 			}
 			else {
-				_LiveCells->insert_or_assign(cell->id, cell->color);
+				_LiveCells->insert_or_assign(cell->id(), cell->color);
 			}
 		}
 
@@ -252,49 +261,22 @@ namespace gol {
 			return _Columns;
 		}
 
-		std::map<int, unsigned long> getLiveCells() const
+		std::map<std::string, unsigned long> getLiveCells() const
 		{
 			return *_LiveCells;
 		}
 
-		std::map<int, unsigned long> getCellsBorn() const 
+		std::map<std::string, unsigned long> getCellsBorn() const
 		{
 			return *_CellsBorn;
 		}
 
-		std::map<int, unsigned long> getCellsDied() const 
+		std::map<std::string, unsigned long> getCellsDied() const
 		{
 			return *_CellsDied;
 		}
 	};
 }
-//int main()
-//{
-//    const auto begin_time = clock();
-//    
-//    auto env = std::make_shared<Environment>(40, 40);
-//
-//    for (auto i = 0; i < 40; i++)
-//        for (auto j = 0; j < 40; j++)
-//        {
-//            if (i * j % 5 == 0)
-//                env->getCell(i, j)->toggleLife();
-//        }
-//
-//    for (auto x = 0; x < 10000; x++)
-//    {
-//        env->NextGeneration();
-//        if (env->getGen() % 1000 == 0) cout << "generation: " << env->getGen() << endl;
-//    }
-//
-//    // do something
-//    std::cout << float(clock() - begin_time) / CLOCKS_PER_SEC;
-//
-//    char empty;
-//    cin >> empty;
-//
-//    return 0;
-//}
 
 #include <node.h>
 
@@ -372,11 +354,11 @@ namespace node {
 		env->setColorAndFlipCell(x, y, color);
 	}
 
-	Local<Object> mapToJSObject(std::map<int, unsigned long> map, Isolate* isolate) {
+	Local<Object> mapToJSObject(std::map<std::string, unsigned long> map, Isolate* isolate) {
 		Local<Object> obj = Object::New(isolate);
-		for (std::map<int, unsigned long>::iterator it = map.begin(); it != map.end(); ++it)
+		for (std::map<std::string, unsigned long>::iterator it = map.begin(); it != map.end(); ++it)
 		{
-			obj->Set(String::NewFromUtf8(isolate, &std::to_string(it->first)[0]),
+			obj->Set(String::NewFromUtf8(isolate, &it->first[0]),
 				String::NewFromUtf8(isolate, &std::to_string(it->second)[0]));
 		}
 		return obj;
