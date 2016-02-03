@@ -3,8 +3,8 @@
 #include <memory>
 #include <map>
 #include <assert.h>
-#include <iostream>
 #include <locale>
+#include <sstream>
 
 namespace gol {
 	typedef unsigned long Color;
@@ -40,12 +40,12 @@ namespace gol {
 			return (color & 0xFF);
 		}
 
-		int row = 0;
-		int col = 0;
+		int x = 0;
+		int y = 0;
 
 		std::string id() const
 		{
-			return std::to_string(row) + "-" + std::to_string(col);
+			return std::to_string(x) + "-" + std::to_string(y);
 		}
 
 		Color color = 0x0;
@@ -89,28 +89,34 @@ namespace gol {
 			_Rows(rows),
 			_Columns(columns)
 		{
-            _Cells.resize(rows * columns);
+			_Cells.resize(rows * columns);
 
-			for (auto i = 0; i < _Columns * _Rows; i++)
-			{
-				_Cells[i].col = (int)(i/_Columns);
-				auto remainder = i % _Columns;
-				_Cells[i].row = remainder ? remainder - 1 : _Columns - 1;
-			}
+			for (auto x = 0; x < _Columns; x++)
+				for (auto y = 0; y < _Rows; y++)
+				{
+					auto index = getIndex(x, y);
+					_Cells[index].x = x;
+					_Cells[index].y = y;
+				}
 
 			_CellsBorn = std::make_shared<CellsColor>();
 			_CellsDied = std::make_shared<CellsColor>();
 			_LiveCells = std::make_shared<CellsColor>();
 		}
+		
+		int getIndex(int x, int y) const
+		{
+			return x + y * _Columns;
+		}
 
 		Cell* getCell(int x, int y)
 		{
-			return &_Cells[x * _Rows + y];
+			return &_Cells[getIndex(x, y)];
 		}
 
 		Cell* getOldCell(int x, int y)
 		{
-			return &_OldCells[x * _Rows + y];
+			return &_OldCells[getIndex(x, y)];
 		}
 
 		void NextGeneration()
@@ -119,28 +125,28 @@ namespace gol {
 			_CellsBorn->clear();
 			_CellsDied->clear();
 
-            auto size = _Columns * _Rows;
-            _OldCells.resize(size);
-            memcpy(&_OldCells[0], &_Cells[0], size * sizeof(Cell));
+			auto size = _Columns * _Rows;
+			_OldCells.resize(size);
+			memcpy(&_OldCells[0], &_Cells[0], size * sizeof(Cell));
 
-			for (auto j = 0; j < _Rows; j++)
+			for (auto x = 0; x < _Columns; x++)
 			{
-				for (auto i = 0; i < _Columns; i++)
+				for (auto y = 0; y < _Rows; y++)
 				{
-					auto currCell = getOldCell(i, j);
+					auto currCell = getOldCell(x, y);
 					auto alive = currCell->alive();
-					CountAndColor neighbor = this->neighborCountAndAverageColor(i, j);
+					CountAndColor neighbor = this->neighborCountAndAverageColor(x, y);
 					auto averageColor = neighbor.color;
 					if (alive && (neighbor.count < 2 || neighbor.count > 3))
 					{
-						setColorAndFlipCell(i, j, deadColor);
+						setColorAndFlipCell(x, y, deadColor);
 						_LiveCells->erase(currCell->id());
 						//passing 0 as value because the cell id passed as the key expresses enough information
 						_CellsDied->insert_or_assign(currCell->id(), 0x000000);
 					}
 					else if (!alive && neighbor.count == 3)
 					{
-						setColorAndFlipCell(i, j, averageColor);
+						setColorAndFlipCell(x, y, averageColor);
 						//the client only needs to know the color
 						_LiveCells->insert_or_assign(currCell->id(), averageColor);
 						_CellsBorn->_Insert_or_assign(currCell->id(), averageColor);
@@ -198,34 +204,57 @@ namespace gol {
 			auto averageG = 0;
 			auto averageB = 0;
 
+			//left column
 			if (x > 0)
 			{
+				//left
 				ApplyNeighborValues(x - 1, y, count, averageR, averageG, averageB);
+				//top-left
+				if (y > 0)
+				{
+					ApplyNeighborValues(x - 1, y - 1, count, averageR, averageG, averageB);
+				}
+				//bottom-left
+				if (y < _Rows - 1)
+				{
+					ApplyNeighborValues(x - 1, y + 1, count, averageR, averageG, averageB);
+				}
 			}
+			//right column
 			if (x < _Columns - 1)
 			{
+				//right
 				ApplyNeighborValues(x + 1, y, count, averageR, averageG, averageB);
+				//top-right
+				if (y > 0)
+				{
+					ApplyNeighborValues(x + 1, y - 1, count, averageR, averageG, averageB);
+				}
+				//bottom-right
+				if (y < _Rows - 1)
+				{
+					ApplyNeighborValues(x + 1, y + 1, count, averageR, averageG, averageB);
+				}
 			}
+			//top
 			if (y > 0)
 			{
 				ApplyNeighborValues(x, y - 1, count, averageR, averageG, averageB);
 			}
-			if (x < _Rows - 1)
+			//bottom
+			if (y < _Rows - 1)
 			{
 				ApplyNeighborValues(x, y + 1, count, averageR, averageG, averageB);
 			}
 
-			if (getCell(x, y)->alive()) {
-				count--;
-			}
-
-			if (count > 0)
+			Color color = 0;
+			if (count > 1)
 			{
 				averageR = averageR / count;
 				averageG = averageG / count;
 				averageB = averageB / count;
+				color = createRGB(averageR, averageG, averageB);
 			}
-			Color color = createRGB(averageR, averageG, averageB);
 
 			CountAndColor results(count, color);
 			return results;
@@ -236,13 +265,14 @@ namespace gol {
 			return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 		}
 
-		unsigned long hexStringToColor(std::string hex) {
+		unsigned long hexStringToColor(std::string hex) 
+		{
 			assert(hex.length() == 7);
 
 			auto r = std::stoi(hex.substr(1, 2), nullptr, 16);
 			auto g = std::stoi(hex.substr(3, 2), nullptr, 16);
 			auto b = std::stoi(hex.substr(5, 2), nullptr, 16);
-			
+
 			return createRGB(r, g, b);
 		}
 
@@ -255,7 +285,7 @@ namespace gol {
 		{
 			return _Rows;
 		}
-		
+
 		int getColumns() const
 		{
 			return _Columns;
@@ -290,7 +320,7 @@ namespace node {
 	using v8::Value;
 	using v8::Number;
 
-	auto env = std::make_shared<gol::Environment>(0, 0);
+	auto env = std::make_unique<gol::Environment>(0, 0);
 	bool environmentUninitialized = true;
 
 	void createNewEnvironment(const FunctionCallbackInfo<Value>& args) {
@@ -309,10 +339,9 @@ namespace node {
 			return;
 		}
 
-		env.reset();
-		auto rows = (int)std::round(args[0]->NumberValue());
-		auto columns = (int)std::round(args[1]->NumberValue());
-		env = std::make_shared<gol::Environment>(rows, columns);
+		auto rows = static_cast<int>(std::round(args[0]->NumberValue()));
+		auto columns = static_cast<int>(std::round(args[1]->NumberValue()));
+		env = std::make_unique<gol::Environment>(rows, columns);
 	}
 
 	void nextGeneration(const FunctionCallbackInfo<Value>& args) {
@@ -347,19 +376,23 @@ namespace node {
 			return;
 		}
 
-	    auto x = stoi(std::string(*String::Utf8Value(args[0])));
+		auto x = stoi(std::string(*String::Utf8Value(args[0])));
 		auto y = stoi(std::string(*String::Utf8Value(args[1])));
 		v8::String::Utf8Value colorString(args[2]);
 		gol::Color color = env->hexStringToColor(std::string(*colorString));
 		env->setColorAndFlipCell(x, y, color);
 	}
 
-	Local<Object> mapToJSObject(std::map<std::string, unsigned long> map, Isolate* isolate) {
-		Local<Object> obj = Object::New(isolate);
-		for (std::map<std::string, unsigned long>::iterator it = map.begin(); it != map.end(); ++it)
+	Local<Object> mapToJSObject(gol::CellsColor map, Isolate* isolate) {
+		auto obj = Object::New(isolate);
+		
+		for(auto cell : map)
 		{
-			obj->Set(String::NewFromUtf8(isolate, &it->first[0]),
-				String::NewFromUtf8(isolate, &std::to_string(it->second)[0]));
+			std::stringstream ss;
+			ss << "#" << std::hex << cell.second;
+
+			obj->Set(String::NewFromUtf8(isolate, cell.first.c_str()),
+				String::NewFromUtf8(isolate, ss.str().c_str()));
 		}
 		return obj;
 	}
@@ -372,13 +405,15 @@ namespace node {
 	void getCellsBorn(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 		auto genNumber = env->getGen();
-		args.GetReturnValue().Set(mapToJSObject(env->getCellsBorn(), isolate));
+		auto cellsBorn = env->getCellsBorn();
+		args.GetReturnValue().Set(mapToJSObject(cellsBorn, isolate));
 	}
 
 	void getCellsDied(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 		auto genNumber = env->getGen();
-		args.GetReturnValue().Set(mapToJSObject(env->getCellsDied(), isolate));
+		auto cellsDied = env->getCellsDied();
+		args.GetReturnValue().Set(mapToJSObject(cellsDied, isolate));
 	}
 
 	void init(Local<Object> exports) {

@@ -2,14 +2,14 @@
 {
   "target_defaults": {
     "cflags": [],
-    "default_configuration": "Release",
+    "default_configuration": "Debug",
     "defines": [],
     "include_dirs": [],
     "libraries": []
   },
   "variables": {
     "asan": 0,
-    "host_arch": "x64",
+    "host_arch": "win32",
     "icu_data_file": "icudt56l.dat",
     "icu_data_in": "../../deps/icu/source/data/in\\icudt56l.dat",
     "icu_endianness": "l",

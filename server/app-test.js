@@ -4,8 +4,8 @@ var app = express();
 var http = require('http').Server(app);
 var path = require('path');
 var _ = require('lodash');
-var Cell = require('./cell.js');
-var Environment = require('./environment.js');
+// var Cell = require('./cell.js');
+// var Environment = require('./environment.js');
 var gol = require('./cpp/build/Release/gol.node');
 
 var port = process.env.PORT || 5003;
