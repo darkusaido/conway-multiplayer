@@ -1,24 +1,32 @@
 {
-  "name": "conway-multiplayer",
-  "version": "0.0.0",
-  "scripts": {
-    "start": "node server/app.js",
-    "postinstall": "./node_modules/bower/bin/bower install",
-    "nodemon": "nodemon --debug server/app.js",
-    "inspect": "node-inspector --no-preload",
-    "coffee": "coffee --watch --output spec/test_js --compile spec/test_coffee",
-    "test-server": "jasmine-node spec --verbose --autotest --watch . --growl --coffee"
-  },
-  "dependencies": {
-    "bower": "^1.4.1",
-    "express": "^4.13.3",
-    "lodash": "^3.10.1",
-    "nan": "^2.2.0",
-    "socket.io": "^1.4.4"
-  },
-  "devDependencies": {
-    "jasmine-node": "^1.14.5",
-    "node-inspector": "^0.12.3",
-    "nodemon": "^1.4.0"
-  }
+    "name": "conway-multiplayer",
+    "version": "0.0.0",
+    "description": "conway's game of life multiplayer",
+    "main": "clint/index.html",
+    "scripts": {
+        "start": "node server/app.js"
+    },
+    "dependencies": {
+        "express": "^4.13.3",
+        "socket.io": "^1.4.4",
+        "webgl-renderer": "^0.3.3"
+    },
+    "devDependencies": {
+        "source-map-loader": "^0.1.6",
+        "typescript": "^2.2.2",
+        "ts-loader": "^2.0.0",
+        "tslint": "^4.5.1",
+        "webpack": "^2.4.1",
+        "webpack-dev-server": "^2.4.3"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/typedefJorge/conway-multiplayer.git"
+    },
+    "author": "typedefjorge",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/typedefJorge/conway-multiplayer/issues"
+    },
+    "homepage": "https://github.com/typedefJorge/conway-multiplayer#readme"
 }
