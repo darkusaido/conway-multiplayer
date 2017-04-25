@@ -1,69 +1,75 @@
-$(document).ready(function documentReady(){
+document.addEventListener("DOMContentLoaded", () => {
     var socket = io();
     var mouseIsDown = false;
     var running = false;
-    var runButton = $('#run-button');
-    var stopButton = $('#stop-button');
-    var clearButton = $('#clear-button');
-    var runningText = $('#running-text');
+    var tds = document.getElementsByTagName("td");
+    var runButton = document.getElementById("run-button");
+    var stopButton = document.getElementById("stop-button");
+    var clearButton = document.getElementById("clear-button");
+    var runningText = document.getElementById("running-text");
+    var genereationNumber = document.getElementById("generation-number");
     var userColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
 
-    $(this).mousedown(function mouseIsDownSetter() {
+    document.addEventListener("mousedown", () => {
         mouseIsDown = true;
-    }).mouseup(function mouseIsUpSetter() {
+    }, false);
+    document.addEventListener("mousedown", () => {
         mouseIsDown = false;
-    });
-    $('td').on('mousedown', function cellMouseDownHandler(e){
-        e.preventDefault();
-        if(running){
-            return;
-        }
-        var cell = $(this); 
-        if(cell.hasClass('live')){
-            socket.emit('cell-deselected', cell.attr('id'));
-        }
-        else{
-            socket.emit('cell-selected', cell.attr('id'), userColor);
-        }
-    });
-    $('td').on('mouseout', function cellMouseOutHandler(){
-        if(running){
-            return;
-        }
-        var cell = $(this); 
-        if(mouseIsDown &&!cell.hasClass('live')){
-            socket.emit('cell-selected', cell.attr('id'), userColor);
-        }
-    });
+    }, false);
 
-    clearButton.on('click', function clearButtonClickHandler(){
-        console.log('clear button clicked');
+    for(let td of tds)
+    {
+        td.addEventListener("mousedown", (event) =>
+        {
+            e.preventDefault();
+            if(running){
+                return;
+            }
+            var cell = event.target;
+            if(cell.hasClass('live')){
+                socket.emit('cell-deselected', cell.attr('id'));
+            }
+            else{
+                socket.emit('cell-selected', cell.attr('id'), userColor);
+            }
+        }, false);
+        td.addEventListener("mouseout", () =>
+        {
+            if(running){
+                return;
+            }
+            var cell = $(this);
+            if(mouseIsDown &&!cell.hasClass('live')){
+                socket.emit('cell-selected', cell.attr('id'), userColor);
+            }
+        }, false);
+    }
+
+    clearButton.addEventListener('click', () => {
         if(!running){
             socket.emit('clear');
         }
-    });
+    }, false);
 
-    runButton.on('click', function runButtonClickHandler(){
-        console.log('run button clicked')
+    runButton.addEventListener('click', () => {
         socket.emit('running');
-        $(this).attr('disabled', 'disabled');
+        event.target.attr('disabled', 'disabled');
         stopButton.removeAttr('disabled');
         clearButton.attr('disabled', 'disabled');
         runningText.show();
-    });
+    }, false);
 
-    stopButton.on('click', function stopButtonClickHandler(){
-        console.log('stop button clicked')
+    stopButton.addEventListener('click', (event) => {
         socket.emit('stopping');
-        $(this).attr('disabled', 'disabled');
+        event.target.attr('disabled', 'disabled');
         runButton.removeAttr('disabled');
         clearButton.removeAttr('disabled');
         runningText.hide();
-    });
+    }, false);
 
     socket.on('join', function socketJoinHandler(liveCells, isRunning, generationNumber){
         running = isRunning;
-        $('#generation-number').text(generationNumber);
+        generationNumber.innerHTML = generationNumber;
         if(running){
             runButton.attr('disabled', 'disabled');
             stopButton.removeAttr('disabled');
@@ -78,7 +84,7 @@ $(document).ready(function documentReady(){
         }
         clearAllCells();
         for(cellKey in liveCells){
-            var cell = $('#' + cellKey);
+            var cell = document.getElementById(id);
             if(!cell.hasClass('live')){
                 cell.addClass('live');
                 cell.css('background-color', liveCells[cellKey]);
@@ -95,22 +101,21 @@ $(document).ready(function documentReady(){
     });
 
     socket.on('nextGeneration', function socketNextGenerationHandler(generationNumber, cellsBorn, cellsDied){
-        console.log('client recieved nextGeneration event');
-        $('#generation-number').text(generationNumber);
+        generationNumber.innerHTML = generationNumber;
         var uiCell;
         for(cellKey in cellsBorn){
-            uiCell = $('#' + cellKey);
+            uiCell = document.getElementById(cellKey);
             if(!uiCell.hasClass('live')){
                 uiCell.addClass('live');
                 uiCell.css('background-color', cellsBorn[cellKey]);
             }
         }
         for(cellKey in cellsDied){
-            uiCell = $('#' + cellKey);
+            uiCell = document.getElementById(cellKey);
             if(uiCell.hasClass('live')){
                 uiCell.removeClass('live');
                 uiCell.css('background-color', "#eeeeee");
-            }    
+            }
         }
     });
 
@@ -123,12 +128,12 @@ $(document).ready(function documentReady(){
     });
 
     socket.on('clear', function socketClearingHandler(){
-        $('#generation-number').text(0);
+        generationNumber.innerHTML  = 0;
         clearAllCells();
     });
 
     socket.on('life', function socketLifeHandler(id, color){
-        var cell = $('#' + id);
+        var cell = document.getElementById(id);
         if(!cell.hasClass('live')){
             cell.addClass('live');
             cell.css('background-color', color);
@@ -136,15 +141,16 @@ $(document).ready(function documentReady(){
     });
 
     socket.on('death', function socketDeathHandler(id){
-        var cell = $('#' + id);
+        var cell = document.getElementById(id);
         if(cell.hasClass('live')){
             cell.removeClass('live');
             cell.css('background-color', '#eeeeee');
-        } 
+        }
     });
 
     var clearAllCells = function clearAllCellsHandler() {
-        $('.live').css('background-color', "#eeeeee");
-        $('.live').removeClass('live');
+        let liveOnes = document.getElementsByClassName$("live");
+        liveOnes.css('background-color', "#eeeeee");
+        liveOnes.removeClass('live');
     }
-});    
+});
