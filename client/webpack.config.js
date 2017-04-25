@@ -1,25 +1,28 @@
+var webpack = require('webpack');
+
 module.exports = {
-    entry: "./src/main.tsx",
+    entry: [
+        'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true',
+        "./index.ts",
+    ],
     output: {
         filename: "index.js",
-        path: __dirname + "/dist"
     },
 
-    // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
 
     resolve: {
-        // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: [".ts", ".tsx"]
     },
 
     module: {
         loaders: [
-            // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
             { test: /\.tsx?$/, loader: "ts-loader" }
         ]
     },
-
-    externals: {
-    }
+    plugins: [
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
+    ],
 };

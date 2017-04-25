@@ -7,6 +7,7 @@
         "start": "node server/app.js"
     },
     "dependencies": {
+        "@types/socket.io": "^1.4.29",
         "express": "^4.13.3",
         "socket.io": "^1.4.4",
         "webgl-renderer": "^0.3.3"
