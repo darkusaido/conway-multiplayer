@@ -1,59 +1,93 @@
 import * as io from "socket.io";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () =>
+{
     let socket = io();
     let mouseIsDown = false;
     let running = false;
-    let tds = document.getElementsByTagName("td");
-    let runButton = document.getElementById("run-button");
-    let stopButton = document.getElementById("stop-button");
-    let clearButton = document.getElementById("clear-button");
-    let runningText = document.getElementById("running-text");
-    let generationNumber = document.getElementById("generation-number");
-    let userColor = "#000000".replace(/0/g,function(){return (~~(Math.random()*16)).toString(16);});
+    const tds = document.getElementsByTagName("td");
+    const runButton = document.getElementById("run-button");
+    const stopButton = document.getElementById("stop-button");
+    const clearButton = document.getElementById("clear-button");
+    const runningText = document.getElementById("running-text");
+    const generationNumberText = document.getElementById("generation-number");
 
-    document.addEventListener("mousedown", () => {
+    if (!tds) { throw ("table cells not found"); }
+    if (!runButton) { throw ("run button not found"); }
+    if (!stopButton) { throw ("stop button not found"); }
+    if (!clearButton) { throw ("clear button not found"); }
+    if (!runningText) { throw ("running text not found"); }
+    if (!generationNumberText) { throw ("generation number not found"); }
+
+    // tslint:disable-next-line:no-bitwise
+    let userColor = "#000000".replace(/0/g, () => (~~(Math.random() * 16)).toString(16));
+
+    let clearAllCells = function clearAllCellsHandler()
+    {
+        let liveOnes = document.getElementsByClassName("live");
+        for (let i = 0; i < liveOnes.length; i++)
+        {
+            let liveOne = liveOnes[i] as HTMLElement;
+            liveOne.style.backgroundColor = "#eeeeee";
+            liveOne.classList.remove("live");
+        }
+    };
+
+    document.addEventListener("mousedown", () =>
+    {
         mouseIsDown = true;
     }, false);
-    document.addEventListener("mousedown", () => {
+    document.addEventListener("mousedown", () =>
+    {
         mouseIsDown = false;
     }, false);
 
-    for(let td of tds)
+    for (let i = 0; i < tds.length; i++)
     {
+        let td = tds[i];
+
         td.addEventListener("mousedown", (event: MouseEvent) =>
         {
             event.preventDefault();
-            if(running){
+            if (running)
+            {
                 return;
             }
             let cell = event.target as HTMLElement;
-            if(cell.classList.contains("live")){
+            if (cell.classList.contains("live"))
+            {
                 socket.emit("cell-deselected", cell.getAttribute("id"));
             }
-            else{
+            else
+            {
                 socket.emit("cell-selected", cell.getAttribute("id"), userColor);
             }
         }, false);
         td.addEventListener("mouseout", () =>
         {
-            if(running){
+            if (!event) { return; }
+            if (running)
+            {
                 return;
             }
             let cell = event.target as HTMLElement;
-            if(mouseIsDown &&!cell.classList.contains("live")){
+            if (mouseIsDown && !cell.classList.contains("live"))
+            {
                 socket.emit("cell-selected", cell.getAttribute("id"), userColor);
             }
         }, false);
     }
 
-    clearButton.addEventListener("click", () => {
-        if(!running){
+    clearButton.addEventListener("click", () =>
+    {
+        if (!running)
+        {
             socket.emit("clear");
         }
     }, false);
 
-    runButton.addEventListener("click", () => {
+    runButton.addEventListener("click", () =>
+    {
         socket.emit("running");
         runButton.setAttribute("disabled", "disabled");
         stopButton.setAttribute("disabled", "");
@@ -61,7 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
         runningText.classList.remove("hidden");
     }, false);
 
-    stopButton.addEventListener("click", (event) => {
+    stopButton.addEventListener("click", (event) =>
+    {
         socket.emit("stopping");
         stopButton.setAttribute("disabled", "disabled");
         runButton.setAttribute("disabled", "");
@@ -69,32 +104,41 @@ document.addEventListener("DOMContentLoaded", () => {
         runningText.classList.add("hidden");
     }, false);
 
-    socket.on("join", function socketJoinHandler(liveCells: Array<any>, isRunning, generationNumber){
+    socket.on("join", function socketJoinHandler(liveCells: Array<any>, isRunning, generationNumber)
+    {
         running = isRunning;
         generationNumber.innerHTML = generationNumber;
-        if(running){
+        if (running)
+        {
             runButton.setAttribute("disabled", "disabled");
             stopButton.setAttribute("disabled", "");
             clearButton.setAttribute("disabled", "disabled");
             runningText.classList.remove("hidden");
         }
-        else{
+        else
+        {
             runButton.setAttribute("disabled", "");
             stopButton.setAttribute("disabled", "disabled");
             clearButton.setAttribute("disabled", "");
             runningText.classList.add("hidden");
         }
         clearAllCells();
-        for(let cellKey in liveCells){
+        // tslint:disable-next-line:forin
+        for (let cellKey in liveCells)
+        {
             let cell = document.getElementById(cellKey);
-            if(!cell.classList.contains("live")){
+            if (!cell) { return; }
+
+            if (!cell.classList.contains("live"))
+            {
                 cell.classList.add("live");
                 cell.style.backgroundColor = liveCells[cellKey];
             }
         }
     });
 
-    socket.on("running", function socketGameRunningHandler(){
+    socket.on("running", function socketGameRunningHandler()
+    {
         running = true;
         runButton.setAttribute("disabled", "disabled");
         stopButton.setAttribute("disabled", "");
@@ -102,26 +146,38 @@ document.addEventListener("DOMContentLoaded", () => {
         runningText.classList.remove("hidden");
     });
 
-    socket.on("nextGeneration", function socketNextGenerationHandler(generationNumber, cellsBorn: Array<any>, cellsDied: Array<any>){
+    socket.on("nextGeneration", function socketNextGenerationHandler(generationNumber, cellsBorn: Array<any>, cellsDied: Array<any>)
+    {
         generationNumber.innerHTML = generationNumber;
-        let uiCell: HTMLElement;
-        for(let cellKey in cellsBorn){
-            uiCell = document.getElementById(cellKey);
-            if(!uiCell.classList.contains("live")){
-                uiCell.classList.add("live");
-                uiCell.style.backgroundColor = cellsBorn[cellKey];
+        let cell: HTMLElement | null;
+        // tslint:disable-next-line:forin
+        for (let cellKey in cellsBorn)
+        {
+            cell = document.getElementById(cellKey);
+            if (!cell) { return; }
+
+            if (!cell.classList.contains("live"))
+            {
+                cell.classList.add("live");
+                cell.style.backgroundColor = cellsBorn[cellKey];
             }
         }
-        for(let cellKey in cellsDied){
-            uiCell = document.getElementById(cellKey);
-            if(uiCell.classList.contains("live")){
-                uiCell.classList.remove("live");
-                uiCell.style.backgroundColor = "#eeeeee";
-        }
+        // tslint:disable-next-line:forin
+        for (let cellKey in cellsDied)
+        {
+            cell = document.getElementById(cellKey);
+            if (!cell) { return; }
+
+            if (cell.classList.contains("live"))
+            {
+                cell.classList.remove("live");
+                cell.style.backgroundColor = "#eeeeee";
+            }
         }
     });
 
-    socket.on("stopping", function socketGameStoppingHandler(){
+    socket.on("stopping", function socketGameStoppingHandler()
+    {
         running = false;
         stopButton.setAttribute("disabled", "disabled");
         runButton.setAttribute("disabled", "");
@@ -129,34 +185,33 @@ document.addEventListener("DOMContentLoaded", () => {
         runningText.classList.add("hidden");
     });
 
-    socket.on("clear", function socketClearingHandler(){
-        generationNumber.innerHTML  = "0";
+    socket.on("clear", function socketClearingHandler()
+    {
+        generationNumberText.innerHTML = "0";
         clearAllCells();
     });
 
-    socket.on("life", function socketLifeHandler(id, color){
+    socket.on("life", function socketLifeHandler(id, color)
+    {
         let cell = document.getElementById(id);
-        if(!cell.classList.contains("live")){
+        if (!cell) { return; }
+
+        if (!cell.classList.contains("live"))
+        {
             cell.classList.add("live");
             cell.style.backgroundColor = color;
         }
     });
 
-    socket.on("death", function socketDeathHandler(id){
+    socket.on("death", function socketDeathHandler(id)
+    {
         let cell = document.getElementById(id);
-        if(cell.classList.contains("live")){
+        if (!cell) { return; }
+
+        if (cell.classList.contains("live"))
+        {
             cell.classList.remove("live");
             cell.style.backgroundColor = "#eeeeee";
-    }
-    });
-
-    let clearAllCells = function clearAllCellsHandler() {
-        let liveOnes = document.getElementsByClassName("live");
-        for(let i = 0; i < liveOnes.length; i++)
-        {
-            let liveOne = liveOnes[i] as HTMLElement;
-            liveOne.style.backgroundColor = "#eeeeee";
-            liveOne.classList.remove("live");
         }
-    }
+    });
 });

@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "sourceMap": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "isolatedModules": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "watch": true,
+        "noEmitOnError": true,
+        "strictNullChecks": true,
+        "types" : [
+            "jasmine"
+        ]
+    },
+    "exclude": [
+        "**/node_modules/*",
+        "**/typings/*",
+        "**/*.d.ts"
+    ]
+}
