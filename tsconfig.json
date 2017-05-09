@@ -15,14 +15,11 @@
         "suppressImplicitAnyIndexErrors": true,
         "watch": true,
         "noEmitOnError": true,
-        "strictNullChecks": true,
-        "types" : [
-            "jasmine"
-        ]
+        "strictNullChecks": true
     },
     "exclude": [
-        "**/node_modules/**/*",
-        "**/typings/**/*",
+        "node_modules/**/*.ts",
+        "node_modules/**/*.tsx",
         "**/*.d.ts"
     ]
 }

@@ -4,21 +4,22 @@
     "description": "conway's game of life multiplayer",
     "main": "clint/index.html",
     "scripts": {
-        "start": "node server/app.js"
+        "server": "node server/app.js",
+        "client": "webpack --watch"
     },
     "dependencies": {
-        "@types/socket.io": "^1.4.29",
+        "@types/socket.io-client": "^1.4.29",
         "express": "^4.13.3",
-        "socket.io": "^1.4.4",
-        "webgl-renderer": "^0.3.3"
+        "socket.io": "^2.0.1",
+        "socket.io-client": "^2.0.1"
     },
     "devDependencies": {
+        "morgan": "^1.5.2",
         "source-map-loader": "^0.1.6",
-        "typescript": "^2.2.2",
+        "typescript": "^2.3.2",
         "ts-loader": "^2.0.0",
         "tslint": "^4.5.1",
-        "webpack": "^2.4.1",
-        "webpack-dev-server": "^2.4.3"
+        "webpack": "^2.4.1"
     },
     "repository": {
         "type": "git",

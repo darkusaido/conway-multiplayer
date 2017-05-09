@@ -1,6 +1,11 @@
-import * as io from "socket.io";
+import * as io from "socket.io-client";
 
 document.addEventListener("DOMContentLoaded", () =>
+{
+    domReady();
+});
+
+export function domReady()
 {
     let socket = io();
     let mouseIsDown = false;
@@ -107,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () =>
     socket.on("join", function socketJoinHandler(liveCells: Array<any>, isRunning, generationNumber)
     {
         running = isRunning;
-        generationNumber.innerHTML = generationNumber;
+        generationNumberText.innerHTML = generationNumber;
         if (running)
         {
             runButton.setAttribute("disabled", "disabled");
@@ -148,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () =>
 
     socket.on("nextGeneration", function socketNextGenerationHandler(generationNumber, cellsBorn: Array<any>, cellsDied: Array<any>)
     {
-        generationNumber.innerHTML = generationNumber;
+        generationNumberText.innerHTML = generationNumber;
         let cell: HTMLElement | null;
         // tslint:disable-next-line:forin
         for (let cellKey in cellsBorn)
@@ -214,4 +219,4 @@ document.addEventListener("DOMContentLoaded", () =>
             cell.style.backgroundColor = "#eeeeee";
         }
     });
-});
+};
