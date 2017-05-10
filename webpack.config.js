@@ -1,11 +1,12 @@
-//var webpack = require('webpack');
+var webpack = require('webpack');
 const path = require("path");
 
 module.exports = {
-    entry:
-        /*'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true',*/
+    context: __dirname,
+    entry:[
+        'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true',
         path.resolve(__dirname, "client/index.ts")
-    ,
+    ],
     output: {
         filename: "index.js",
         path: path.resolve(__dirname, "client"),
@@ -28,9 +29,7 @@ module.exports = {
         ]
     },
     plugins: [
-        //new webpack.optimize.UglifyJsPlugin()
-        // new webpack.optimize.OccurenceOrderPlugin(),
-        // new webpack.HotModuleReplacementPlugin(),
-        // new webpack.NoErrorsPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin()
     ],
 };
