@@ -1,8 +1,40 @@
 import * as io from "socket.io-client";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { IWebGLRenderer, WebGLRenderer, ContextWrangler } from "webgl-renderer";
+import { Callbacks } from "./utils/callbacks";
+
+class App extends React.Component<{}, {}>
+{
+    private canvas:  HTMLCanvasElement;
+    private gl: WebGLRenderingContext;
+    private renderer: IWebGLRenderer;
+    constructor()
+    {
+        super();
+
+        this.canvas = document.getElementById("mycanvas") as HTMLCanvasElement;
+        this.gl = ContextWrangler.getContext(this.canvas);
+        this.renderer = new WebGLRenderer(this.canvas.width, this.canvas.height, this.gl);
+
+        window.addEventListener("resize", () => { Callbacks.resizeCanvas(window, this.renderer, this.canvas); }, false);
+        Callbacks.resizeCanvas(window, this.renderer, this.canvas);
+
+        Callbacks.renderLoop(this.renderer, window);
+    }
+
+    public render()
+    {
+        return (
+            <span>still working on it boiiii</span>
+        );
+    }
+}
 
 document.addEventListener("DOMContentLoaded", () =>
 {
     domReady();
+    ReactDOM.render(<App/>, document.getElementById("main"));
 });
 
 export function domReady()

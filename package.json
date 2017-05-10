@@ -8,12 +8,15 @@
         "client": "webpack --watch"
     },
     "dependencies": {
-        
+        "@types/react": "^15.0.24",
+        "@types/react-dom": "^15.5.0",
         "@types/socket.io-client": "^1.4.29",
         "express": "^4.13.3",
         "react": "^15.5.4",
+        "react-dom": "^15.5.4",
         "socket.io": "^2.0.1",
-        "socket.io-client": "^2.0.1"
+        "socket.io-client": "^2.0.1",
+        "webgl-renderer": "^0.3.4"
     },
     "devDependencies": {
         "morgan": "^1.5.2",
