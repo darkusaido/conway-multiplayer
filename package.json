@@ -5,7 +5,7 @@
     "main": "clint/index.html",
     "scripts": {
         "server": "node server/app.js",
-        "client": "webpack --watch"
+        "client": "webpack --watch --config ./client/webpack.config.js"
     },
     "dependencies": {
         "@types/react": "^15.0.24",

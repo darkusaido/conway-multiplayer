@@ -40,6 +40,41 @@ document.addEventListener("DOMContentLoaded", () =>
 export function domReady()
 {
     let socket = io();
+
+    socket.on("join", function socketJoinHandler(liveCells: Array<any>, isRunning, generationNumber)
+    {
+        // running = isRunning;
+        // generationNumberText.innerHTML = generationNumber;
+        // if (running)
+        // {
+        //     runButton.setAttribute("disabled", "disabled");
+        //     stopButton.setAttribute("disabled", "");
+        //     clearButton.setAttribute("disabled", "disabled");
+        //     runningText.classList.remove("hidden");
+        // }
+        // else
+        // {
+        //     runButton.setAttribute("disabled", "");
+        //     stopButton.setAttribute("disabled", "disabled");
+        //     clearButton.setAttribute("disabled", "");
+        //     runningText.classList.add("hidden");
+        // }
+        // clearAllCells();
+        // // tslint:disable-next-line:forin
+        // for (let cellKey in liveCells)
+        // {
+        //     let cell = document.getElementById(cellKey);
+        //     if (!cell) { return; }
+
+        //     if (!cell.classList.contains("live"))
+        //     {
+        //         cell.classList.add("live");
+        //         cell.style.backgroundColor = liveCells[cellKey];
+        //     }
+        // }
+    });
+
+    /*let socket = io();
     let mouseIsDown = false;
     let running = false;
     const tds = document.getElementsByTagName("td");
@@ -250,5 +285,5 @@ export function domReady()
             cell.classList.remove("live");
             cell.style.backgroundColor = "#eeeeee";
         }
-    });
+    });*/
 };

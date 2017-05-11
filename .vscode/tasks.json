@@ -8,7 +8,7 @@
     "tasks": [
         {
             "args": [
-                ""
+                "--config=./client/webpack.config.js"
             ],
             "suppressTaskName": true,
             "taskName": "webpack dev",
