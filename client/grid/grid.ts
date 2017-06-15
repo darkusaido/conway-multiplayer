@@ -10,6 +10,12 @@ export class Grid
 {
     private rows: number;
     private columns: number;
+    private rowHeight: number;
+    private columnWidth: number;
+    private verticalSpacing: number;
+    private horizontalSpacing: number;
+    private cellWidthDecimal: number;
+    private cellHeightDecimal: number;
     private squaresArray: Array<Rectangle>;
     private gl: WebGLRenderingContext;
 
@@ -17,6 +23,11 @@ export class Grid
     {
         this.rows = Math.floor(canvas.height / settings.totalCellHeight);
         this.columns = Math.floor(canvas.width / settings.totalCellWidth);
+        this.rowHeight = settings.totalCellHeight / (canvas.height / 2);
+        this.columnWidth = settings.totalCellWidth / (canvas.width / 2);
+        this.cellHeightDecimal = settings.cellHeight / (canvas.height / 2);
+        this.cellWidthDecimal = settings.cellWidth / (canvas.width / 2);
+
         this.squaresArray = new Array<Rectangle>();
         this.gl = gl;
 
@@ -25,28 +36,21 @@ export class Grid
 
     private populateSquares()
     {
-        let cellWidthDecimal = (settings.cellWidth / 1000) * 10;
-        let cellHeightDecimal = (settings.cellHeight / 1000) * 10;
-
-        let xIncrement = (settings.totalCellWidth / 1000) * 10;
-        let yIncrement = (settings.totalCellHeight / 1000) * 10;
-
         let currentY = 1.0;
         for (let i = 0; i < this.rows; i++)
         {
+            let currentX = -1.0;
             for (let j = 0; j < this.columns; j++)
             {
-                let currentX = -1.0;
-
                 let startPoint = {x: currentX, y: currentY};
-                let endPoint = {x: currentX + cellWidthDecimal, y: currentY - cellHeightDecimal};
+                let endPoint = {x: currentX + this.cellWidthDecimal, y: currentY - this.cellHeightDecimal};
 
                 this.squaresArray.push(ShapeFactory.createShape(startPoint, endPoint, "rectangles",
                     settings.deadColor, this.gl));
 
-                currentX += xIncrement;
+                currentX += this.columnWidth;
             }
-            currentY -= yIncrement;
+            currentY -= this.rowHeight;
         }
     }
 

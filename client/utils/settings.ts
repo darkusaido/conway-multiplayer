@@ -1,8 +1,8 @@
 import { RGBColor } from "webgl-renderer";
 
-const cellWidth: number = 50;
-const cellHeight: number = 50;
-const cellSpacing: number = 10;
+const cellWidth: number = 10;
+const cellHeight: number = 10;
+const cellSpacing: number = 1;
 const totalCellWidth: number = cellWidth + cellSpacing;
 const totalCellHeight: number = cellHeight + cellSpacing;
 const deadColor = new RGBColor(0.9, 0.9, 0.9);
