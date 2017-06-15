@@ -16,7 +16,7 @@
         "react-dom": "^15.5.4",
         "socket.io": "^2.0.1",
         "socket.io-client": "^2.0.1",
-        "webgl-renderer": "^0.3.4"
+        "webgl-renderer": "^0.3.8"
     },
     "devDependencies": {
         "morgan": "^1.5.2",

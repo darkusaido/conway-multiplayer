@@ -1,5 +1,6 @@
 import { IWebGLRenderer } from "webgl-renderer";
 import { settings } from "./settings";
+import { Grid } from "../grid/grid";
 
 export class Callbacks
 {
@@ -8,6 +9,9 @@ export class Callbacks
         renderer.setViewPortDimensions(window.innerWidth, window.innerHeight);
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight - settings.buttonBarHeight;
+        let grid = new Grid(canvas, renderer.gl);
+        renderer.addShapesToScene(grid.squares);
+        console.log("resizing");
     }
 
     public static renderLoop (renderer: IWebGLRenderer, window: Window): void

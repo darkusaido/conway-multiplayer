@@ -3,19 +3,25 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { IWebGLRenderer, WebGLRenderer, ContextWrangler } from "webgl-renderer";
 import { Callbacks } from "./utils/callbacks";
+import { ButtonBar } from "./components/buttonBar";
+import { Grid, IGrid } from "./grid/grid";
+import { RGBColor } from "webgl-renderer";
 
 class App extends React.Component<{}, {}>
 {
     private canvas:  HTMLCanvasElement;
     private gl: WebGLRenderingContext;
     private renderer: IWebGLRenderer;
+    private grid: IGrid;
     constructor()
     {
         super();
 
         this.canvas = document.getElementById("mycanvas") as HTMLCanvasElement;
         this.gl = ContextWrangler.getContext(this.canvas);
-        this.renderer = new WebGLRenderer(this.canvas.width, this.canvas.height, this.gl);
+
+        let backgroundColor = new RGBColor(0.8, 0.8, 0.8);
+        this.renderer = new WebGLRenderer(this.canvas.width, this.canvas.height, this.gl, backgroundColor);
 
         window.addEventListener("resize", () => { Callbacks.resizeCanvas(window, this.renderer, this.canvas); }, false);
         Callbacks.resizeCanvas(window, this.renderer, this.canvas);
@@ -26,7 +32,7 @@ class App extends React.Component<{}, {}>
     public render()
     {
         return (
-            <span>still working on it boiiii</span>
+            <ButtonBar/>
         );
     }
 }
