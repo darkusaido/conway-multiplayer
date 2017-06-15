@@ -3,7 +3,6 @@
 /client/*.js.map
 !/client/webpack.config.js
 
-
 # Logs
 logs
 *.log
