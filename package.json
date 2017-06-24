@@ -16,10 +16,9 @@
         "react-dom": "^15.5.4",
         "socket.io": "^2.0.1",
         "socket.io-client": "^2.0.1",
-        "webgl-renderer": "^0.3.8"
+        "webgl-renderer": "^0.5.2"
     },
     "devDependencies": {
-        "morgan": "^1.5.2",
         "source-map-loader": "^0.1.6",
         "typescript": "^2.3.2",
         "ts-loader": "^2.0.0",

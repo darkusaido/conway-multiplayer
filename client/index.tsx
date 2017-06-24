@@ -5,7 +5,7 @@ import { IWebGLRenderer, WebGLRenderer, ContextWrangler } from "webgl-renderer";
 import { Callbacks } from "./utils/callbacks";
 import { ButtonBar } from "./components/buttonBar";
 import { Grid, IGrid } from "./grid/grid";
-import { RGBColor } from "webgl-renderer";
+import { RGBColor, Camera, Point3d } from "webgl-renderer";
 
 class App extends React.Component<{}, {}>
 {
@@ -21,7 +21,13 @@ class App extends React.Component<{}, {}>
         this.gl = ContextWrangler.getContext(this.canvas);
 
         let backgroundColor = new RGBColor(0.8, 0.8, 0.8);
-        this.renderer = new WebGLRenderer(this.canvas.width, this.canvas.height, this.gl, backgroundColor);
+        let color = { red: 0.0, green: 0.0, blue: 0.0 };
+        let eyePosition = new Point3d(0, 0, 0);
+        let lookAtPoint = new Point3d(0, 0, -1);
+        let upPosition = new Point3d(0, 1, 0);
+        let camera = new Camera(eyePosition, lookAtPoint, upPosition);
+        this.renderer = new WebGLRenderer(this.canvas.width, this.canvas.height,
+            this.gl, backgroundColor, color, camera);
 
         window.addEventListener("resize", () => { Callbacks.resizeCanvas(window, this.renderer, this.canvas); }, false);
         Callbacks.resizeCanvas(window, this.renderer, this.canvas);
