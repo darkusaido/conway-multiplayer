@@ -5,6 +5,10 @@
     "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
     "typescript.referencesCodeLens.enabled": true,
     "typescript.implementationsCodeLens.enabled": true,
+    "tsimporter.doubleQuotes":true,
+    "tsimporter.filesToExclude" : [
+        "./lib/**"
+    ],
     "javascript.format.placeOpenBraceOnNewLineForFunctions": true,
     "javascript.format.placeOpenBraceOnNewLineForControlBlocks": true,
     "files.autoSave": "afterDelay",
@@ -12,5 +16,10 @@
     "editor.tabSize": 4,
     "editor.renderWhitespace": "all",
     "editor.minimap.enabled": true,
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+        "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/coverage": true
+    }
 }

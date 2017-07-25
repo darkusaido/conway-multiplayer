@@ -16,7 +16,7 @@
         "react-dom": "^15.5.4",
         "socket.io": "^2.0.1",
         "socket.io-client": "^2.0.1",
-        "webgl-renderer": "^0.5.2"
+        "webgl-renderer": "^0.6.12"
     },
     "devDependencies": {
         "source-map-loader": "^0.1.6",

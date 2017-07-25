@@ -1,9 +1,9 @@
 import { settings } from "../utils/settings";
-import { Rectangle, ShapeFactory } from "webgl-renderer";
+import { Shape2d, ShapeFactory, Vec3 } from "webgl-renderer";
 
 export interface IGrid
 {
-    squares: Array<Rectangle>;
+    squares: Array<Shape2d>;
 }
 
 export class Grid
@@ -12,11 +12,9 @@ export class Grid
     private columns: number;
     private rowHeight: number;
     private columnWidth: number;
-    private verticalSpacing: number;
-    private horizontalSpacing: number;
     private cellWidthDecimal: number;
     private cellHeightDecimal: number;
-    private squaresArray: Array<Rectangle>;
+    private squaresArray: Array<Shape2d>;
     private gl: WebGLRenderingContext;
 
     constructor(canvas: HTMLCanvasElement, gl: WebGLRenderingContext)
@@ -28,7 +26,7 @@ export class Grid
         this.cellHeightDecimal = settings.cellHeight / (canvas.height / 2);
         this.cellWidthDecimal = settings.cellWidth / (canvas.width / 2);
 
-        this.squaresArray = new Array<Rectangle>();
+        this.squaresArray = new Array<Shape2d>();
         this.gl = gl;
 
         this.populateSquares();
@@ -42,11 +40,11 @@ export class Grid
             let currentX = -1.0;
             for (let j = 0; j < this.columns; j++)
             {
-                let startPoint = {x: currentX, y: currentY};
-                let endPoint = {x: currentX + this.cellWidthDecimal, y: currentY - this.cellHeightDecimal};
+                let startPoint = new Vec3(currentX, currentY);
+                let endPoint = new Vec3((currentX + this.cellWidthDecimal),(currentY - this.cellHeightDecimal));
 
                 this.squaresArray.push(ShapeFactory.createShape(startPoint, endPoint, "rectangles",
-                    settings.deadColor, this.gl));
+                    this.gl, settings.deadColor));
 
                 currentX += this.columnWidth;
             }
@@ -54,7 +52,7 @@ export class Grid
         }
     }
 
-    public get squares(): Array<Rectangle>
+    public get squares(): Array<Shape2d>
     {
         return this.squaresArray;
     }
