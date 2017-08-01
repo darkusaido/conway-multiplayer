@@ -14,14 +14,4 @@ export class Callbacks
         renderer.addShapesToScene(grid.squares);
         console.log("resizing");
     }
-
-    public static renderLoop (renderer: WebGLRenderer, window: Window): void
-    {
-        // const currentEyePosition = renderer.camera.eyePosition;
-        // const nextX = currentEyePosition.x - 0.01;
-        // let newEyePosition = new Vec3(nextX, currentEyePosition.y, currentEyePosition.z);
-        // renderer.camera.setCameraView(newEyePosition, renderer.camera.lookAtPoint, renderer.camera.upPosition);
-        renderer.draw();
-        window.requestAnimationFrame(() => { Callbacks.renderLoop(renderer, window); });
-    };
 }

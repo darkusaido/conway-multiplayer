@@ -1,38 +1,38 @@
 {
-    "name": "conway-multiplayer",
-    "version": "0.0.0",
-    "description": "conway's game of life multiplayer",
-    "main": "clint/index.html",
-    "scripts": {
-        "server": "node server/app.js",
-        "client": "webpack --watch --config ./client/webpack.config.js"
-    },
-    "dependencies": {
-        "@types/react": "^15.0.24",
-        "@types/react-dom": "^15.5.0",
-        "@types/socket.io-client": "^1.4.29",
-        "express": "^4.13.3",
-        "react": "^15.5.4",
-        "react-dom": "^15.5.4",
-        "socket.io": "^2.0.1",
-        "socket.io-client": "^2.0.1",
-        "webgl-renderer": "^0.6.12"
-    },
-    "devDependencies": {
-        "source-map-loader": "^0.1.6",
-        "typescript": "^2.3.2",
-        "ts-loader": "^2.0.0",
-        "tslint": "^4.5.1",
-        "webpack": "^2.4.1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/typedefJorge/conway-multiplayer.git"
-    },
-    "author": "typedefjorge",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/typedefJorge/conway-multiplayer/issues"
-    },
-    "homepage": "https://github.com/typedefJorge/conway-multiplayer#readme"
+  "name": "conway-multiplayer",
+  "version": "0.0.0",
+  "description": "conway's game of life multiplayer",
+  "main": "clint/index.html",
+  "scripts": {
+    "server": "node server/app.js",
+    "client": "webpack --watch --config ./client/webpack.config.js"
+  },
+  "dependencies": {
+    "@types/react": "^15.0.24",
+    "@types/react-dom": "^15.5.0",
+    "@types/socket.io-client": "^1.4.29",
+    "express": "^4.13.3",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "socket.io": "^2.0.1",
+    "socket.io-client": "^2.0.1",
+    "webgl-renderer": "git+https://github.com/typedefJorge/webgl-renderer.git#handle_context_loss"
+  },
+  "devDependencies": {
+    "source-map-loader": "^0.1.6",
+    "typescript": "^2.3.2",
+    "ts-loader": "^2.0.0",
+    "tslint": "^4.5.1",
+    "webpack": "^2.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typedefJorge/conway-multiplayer.git"
+  },
+  "author": "typedefjorge",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/typedefJorge/conway-multiplayer/issues"
+  },
+  "homepage": "https://github.com/typedefJorge/conway-multiplayer#readme"
 }
