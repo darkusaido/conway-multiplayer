@@ -1,37 +1,36 @@
 import * as io from "socket.io-client";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { WebGLRenderer, BrowserHelper, DrawingSettings, RGBColor, Camera, Vec3 } from "webgl-renderer";
+import { WebGLRenderer, RenderingOptions, RGBColor, Camera, Vec3 } from "webgl-renderer";
 import { Callbacks } from "./utils/callbacks";
 import { ButtonBar } from "./components/buttonBar";
 
+declare var WebGLDebugUtils: any;
+
 class App extends React.Component<{}, {}>
 {
-    private canvas:  HTMLCanvasElement;
-    private renderer: WebGLRenderer;
     constructor()
     {
         super();
 
-        this.canvas = document.getElementById("mycanvas") as HTMLCanvasElement;
+        let canvas = document.getElementById("mycanvas") as HTMLCanvasElement;
 
         let eyePosition = new Vec3(0, 0, 1);
         let lookAtPoint = new Vec3(0, 0, 0);
         let upPosition = new Vec3(0, 1, 1);
         let camera = new Camera(eyePosition, lookAtPoint, upPosition);
 
-        let drawingSettings: DrawingSettings =
+        let options: RenderingOptions =
         {
             backgroundColor: new RGBColor(0.8, 0.8, 0.8),
+            fullscreen: true,
+            resizeCallback: Callbacks.resizeCanvas,
+            camera: camera
         };
 
-        this.renderer = new WebGLRenderer(this.canvas, new BrowserHelper(), window,
-            drawingSettings, camera);
+        const renderer = new WebGLRenderer(canvas, options);
 
-        window.addEventListener("resize", () => { Callbacks.resizeCanvas(window, this.renderer, this.canvas); }, false);
-        Callbacks.resizeCanvas(window, this.renderer, this.canvas);
-
-        this.renderer.start();
+        renderer.start();
     }
 
     public render()

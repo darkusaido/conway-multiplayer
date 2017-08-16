@@ -1,10 +1,10 @@
-import { WebGLRenderer, Vec3 } from "webgl-renderer";
+import { WebGLRenderer } from "webgl-renderer";
 import { settings } from "./settings";
 import { Grid } from "../grid/grid";
 
 export class Callbacks
 {
-    public static resizeCanvas (window: Window, renderer: WebGLRenderer, canvas: HTMLCanvasElement): void
+    public static resizeCanvas (canvas: HTMLCanvasElement, window: Window, renderer: WebGLRenderer): void
     {
         renderer.setViewPortDimensions(window.innerWidth, window.innerHeight);
         canvas.width = window.innerWidth;
@@ -15,3 +15,4 @@ export class Callbacks
         console.log("resizing");
     }
 }
+
