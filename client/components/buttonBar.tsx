@@ -6,7 +6,7 @@ export class ButtonBar extends React.Component<React.Props<any>, {}>
     {
         return (
             <div id="button-bar-container">
-                {/*add buttons here*/}
+                {this.props.children}
             </div>
         );
     }

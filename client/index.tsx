@@ -9,6 +9,8 @@ declare var WebGLDebugUtils: any;
 
 class App extends React.Component<{}, {}>
 {
+    private renderer: WebGLRenderer;
+
     constructor()
     {
         super();
@@ -28,16 +30,37 @@ class App extends React.Component<{}, {}>
             camera: camera
         };
 
-        const renderer = new WebGLRenderer(canvas, options);
+        this.renderer = new WebGLRenderer(canvas, options);
 
-        renderer.start();
+        this.renderer.start();
     }
 
     public render()
     {
         return (
-            <ButtonBar/>
-        );
+            <ButtonBar>
+                <input
+                    type="button"
+                    value="loose context"
+                    onClick={() => {( this.renderer as any).loseContextExtension.loseContext(); }}
+                />
+                <input
+                    type="button"
+                    value="restore context"
+                    onClick={() => {( this.renderer as any).loseContextExtension.restoreContext(); }}
+                />
+                <input
+                    type="button"
+                    value="start"
+                    onClick={() => {this.renderer.start(); }}
+                />
+                <input
+                    type="button"
+                    value="stop"
+                    onClick={() => {this.renderer.stop(); }}
+                />
+            </ButtonBar>
+        )
     }
 }
 
