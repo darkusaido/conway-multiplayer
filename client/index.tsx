@@ -41,16 +41,6 @@ class App extends React.Component<{}, {}>
             <ButtonBar>
                 <input
                     type="button"
-                    value="loose context"
-                    onClick={() => {( this.renderer as any).loseContextExtension.loseContext(); }}
-                />
-                <input
-                    type="button"
-                    value="restore context"
-                    onClick={() => {( this.renderer as any).loseContextExtension.restoreContext(); }}
-                />
-                <input
-                    type="button"
                     value="start"
                     onClick={() => {this.renderer.start(); }}
                 />
