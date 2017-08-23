@@ -8,15 +8,17 @@
     "client": "webpack --watch --config ./client/webpack.config.js"
   },
   "dependencies": {
+    "@types/combokeys" : "^2.4.5",
     "@types/react": "^15.0.24",
     "@types/react-dom": "^15.5.0",
     "@types/socket.io-client": "^1.4.29",
+    "combokeys": "^2.4.6",
     "express": "^4.13.3",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "socket.io": "^2.0.1",
     "socket.io-client": "^2.0.1",
-    "webgl-renderer": "git+https://github.com/typedefJorge/webgl-renderer.git#handle_context_loss"
+    "webgl-renderer": "git+https://github.com/typedefJorge/webgl-renderer.git#depth"
   },
   "devDependencies": {
     "source-map-loader": "^0.1.6",

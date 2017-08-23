@@ -2,6 +2,8 @@ import * as io from "socket.io-client";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { WebGLRenderer, RenderingOptions, RGBColor, Camera, Vec3 } from "webgl-renderer";
+import * as Combokeys from "combokeys";
+
 import { Callbacks } from "./utils/callbacks";
 import { ButtonBar } from "./components/buttonBar";
 
@@ -10,6 +12,7 @@ declare var WebGLDebugUtils: any;
 class App extends React.Component<{}, {}>
 {
     private renderer: WebGLRenderer;
+    private keyHandlers: Combokeys.Combokeys;
 
     constructor()
     {
@@ -21,6 +24,9 @@ class App extends React.Component<{}, {}>
         let lookAtPoint = new Vec3(0, 0, 0);
         let upPosition = new Vec3(0, 1, 1);
         let camera = new Camera(eyePosition, lookAtPoint, upPosition);
+
+        this.keyHandlers = new Combokeys(document.documentElement);
+        this.bindArrowKeys();
 
         let options: RenderingOptions =
         {
@@ -50,7 +56,48 @@ class App extends React.Component<{}, {}>
                     onClick={() => {this.renderer.stop(); }}
                 />
             </ButtonBar>
-        )
+        );
+    }
+
+    private bindArrowKeys()
+    {
+        this.keyHandlers.bind("down", () =>
+        {
+            const leCamera = this.renderer.camera;
+            const oldEyePosition = leCamera.eyePosition;
+            const newEyePosition = new Vec3(
+                oldEyePosition.x,
+                oldEyePosition.y,
+                oldEyePosition.z - 0.01);
+            leCamera.translateEyePosition(newEyePosition);
+        });
+        this.keyHandlers.bind("up", () => {
+            const leCamera = this.renderer.camera;
+            const oldEyePosition = leCamera.eyePosition;
+            const newEyePosition = new Vec3(
+                oldEyePosition.x,
+                oldEyePosition.y,
+                oldEyePosition.z + 0.01);
+            leCamera.translateEyePosition(newEyePosition);
+        });
+        this.keyHandlers.bind("left", () => {
+            const leCamera = this.renderer.camera;
+            const oldEyePosition = leCamera.eyePosition;
+            const newEyePosition = new Vec3(
+                oldEyePosition.x + 0.01,
+                oldEyePosition.y,
+                oldEyePosition.z);
+            leCamera.translateEyePosition(newEyePosition);
+        });
+        this.keyHandlers.bind("right", () => {
+            const leCamera = this.renderer.camera;
+            const oldEyePosition = leCamera.eyePosition;
+            const newEyePosition = new Vec3(
+                oldEyePosition.x - 0.01,
+                oldEyePosition.y,
+                oldEyePosition.z);
+            leCamera.translateEyePosition(newEyePosition);
+        });
     }
 }
 
