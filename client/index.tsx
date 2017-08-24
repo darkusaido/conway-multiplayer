@@ -20,11 +20,6 @@ class App extends React.Component<{}, {}>
 
         let canvas = document.getElementById("mycanvas") as HTMLCanvasElement;
 
-        let eyePosition = new Vec3(0, 0, 1);
-        let lookAtPoint = new Vec3(0, 0, 0);
-        let upPosition = new Vec3(0, 1, 1);
-        let camera = new Camera(eyePosition, lookAtPoint, upPosition);
-
         this.keyHandlers = new Combokeys(document.documentElement);
         this.bindArrowKeys();
 
@@ -32,8 +27,7 @@ class App extends React.Component<{}, {}>
         {
             backgroundColor: new RGBColor(0.8, 0.8, 0.8),
             fullscreen: true,
-            resizeCallback: Callbacks.resizeCanvas,
-            camera: camera
+            resizeCallback: Callbacks.resizeCanvas
         };
 
         this.renderer = new WebGLRenderer(canvas, options);
@@ -44,59 +38,38 @@ class App extends React.Component<{}, {}>
     public render()
     {
         return (
-            <ButtonBar>
-                <input
-                    type="button"
-                    value="start"
-                    onClick={() => {this.renderer.start(); }}
-                />
-                <input
-                    type="button"
-                    value="stop"
-                    onClick={() => {this.renderer.stop(); }}
-                />
-            </ButtonBar>
+            <ButtonBar/>
         );
     }
 
     private bindArrowKeys()
     {
+        this.keyHandlers.bind("pageup", () =>
+        {
+            const leCamera = this.renderer.camera;
+            leCamera.zoomIn();
+        });
+        this.keyHandlers.bind("pagedown", () =>
+        {
+            const leCamera = this.renderer.camera;
+            leCamera.zoomOut();
+        });
         this.keyHandlers.bind("down", () =>
         {
             const leCamera = this.renderer.camera;
-            const oldEyePosition = leCamera.eyePosition;
-            const newEyePosition = new Vec3(
-                oldEyePosition.x,
-                oldEyePosition.y,
-                oldEyePosition.z - 0.01);
-            leCamera.translateEyePosition(newEyePosition);
+            leCamera.translateY(0.01);
         });
         this.keyHandlers.bind("up", () => {
             const leCamera = this.renderer.camera;
-            const oldEyePosition = leCamera.eyePosition;
-            const newEyePosition = new Vec3(
-                oldEyePosition.x,
-                oldEyePosition.y,
-                oldEyePosition.z + 0.01);
-            leCamera.translateEyePosition(newEyePosition);
+            leCamera.translateY(-0.01);
         });
         this.keyHandlers.bind("left", () => {
             const leCamera = this.renderer.camera;
-            const oldEyePosition = leCamera.eyePosition;
-            const newEyePosition = new Vec3(
-                oldEyePosition.x + 0.01,
-                oldEyePosition.y,
-                oldEyePosition.z);
-            leCamera.translateEyePosition(newEyePosition);
+            leCamera.translateX(0.01);
         });
         this.keyHandlers.bind("right", () => {
             const leCamera = this.renderer.camera;
-            const oldEyePosition = leCamera.eyePosition;
-            const newEyePosition = new Vec3(
-                oldEyePosition.x - 0.01,
-                oldEyePosition.y,
-                oldEyePosition.z);
-            leCamera.translateEyePosition(newEyePosition);
+            leCamera.translateX(-0.01);
         });
     }
 }
