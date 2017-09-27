@@ -1,11 +1,12 @@
 import * as io from "socket.io-client";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { WebGLRenderer, RenderingOptions, RGBColor, Camera, Vec3 } from "webgl-renderer";
+import { WebGLRenderer, RenderingOptions, RGBColor } from "webgl-renderer";
 import * as Combokeys from "combokeys";
 
 import { Callbacks } from "./utils/callbacks";
 import { ButtonBar } from "./components/buttonBar";
+import { Grid } from "./grid/grid";
 
 declare var WebGLDebugUtils: any;
 
@@ -33,6 +34,9 @@ class App extends React.Component<{}, {}>
         this.renderer = new WebGLRenderer(canvas, options);
 
         this.renderer.start();
+
+        let grid = new Grid(canvas, this.renderer.gl);
+        this.renderer.addHomogenoeusShapesArrayToScene(grid.squares);
     }
 
     public render()
@@ -57,19 +61,19 @@ class App extends React.Component<{}, {}>
         this.keyHandlers.bind("down", () =>
         {
             const leCamera = this.renderer.camera;
-            leCamera.translateY(0.01);
+            leCamera.panY(0.01);
         });
         this.keyHandlers.bind("up", () => {
             const leCamera = this.renderer.camera;
-            leCamera.translateY(-0.01);
+            leCamera.panY(-0.01);
         });
         this.keyHandlers.bind("left", () => {
             const leCamera = this.renderer.camera;
-            leCamera.translateX(0.01);
+            leCamera.panX(0.01);
         });
         this.keyHandlers.bind("right", () => {
             const leCamera = this.renderer.camera;
-            leCamera.translateX(-0.01);
+            leCamera.panX(-0.01);
         });
     }
 }
@@ -82,10 +86,10 @@ document.addEventListener("DOMContentLoaded", () =>
 
 export function domReady()
 {
-    let socket = io();
+    // let socket = io();
 
-    socket.on("join", function socketJoinHandler(liveCells: Array<any>, isRunning, generationNumber)
-    {
+    // socket.on("join", function socketJoinHandler(liveCells: Array<any>, isRunning, generationNumber)
+    // {
         // running = isRunning;
         // generationNumberText.innerHTML = generationNumber;
         // if (running)
@@ -115,7 +119,7 @@ export function domReady()
         //         cell.style.backgroundColor = liveCells[cellKey];
         //     }
         // }
-    });
+    // });
 
     /*let socket = io();
     let mouseIsDown = false;

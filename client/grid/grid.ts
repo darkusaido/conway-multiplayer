@@ -1,9 +1,9 @@
 import { settings } from "../utils/settings";
-import { Shape2d, ShapeFactory, Vec3 } from "webgl-renderer";
+import { ShapeFactory, Vec3, Rectangle } from "webgl-renderer";
 
 export interface IGrid
 {
-    squares: Array<Shape2d>;
+    squares: Array<Rectangle>;
 }
 
 export class Grid
@@ -14,7 +14,7 @@ export class Grid
     private columnWidth: number;
     private cellWidthDecimal: number;
     private cellHeightDecimal: number;
-    private squaresArray: Array<Shape2d>;
+    private squaresArray: Array<Rectangle>;
     private gl: WebGLRenderingContext;
 
     constructor(canvas: HTMLCanvasElement, gl: WebGLRenderingContext)
@@ -26,7 +26,7 @@ export class Grid
         this.cellHeightDecimal = settings.cellHeight / (canvas.height / 2);
         this.cellWidthDecimal = settings.cellWidth / (canvas.width / 2);
 
-        this.squaresArray = new Array<Shape2d>();
+        this.squaresArray = new Array<Rectangle>();
         this.gl = gl;
 
         this.populateSquares();
@@ -44,7 +44,7 @@ export class Grid
                 let endPoint = new Vec3((currentX + this.cellWidthDecimal),(currentY - this.cellHeightDecimal));
 
                 this.squaresArray.push(ShapeFactory.createShape(startPoint, endPoint, "rectangles",
-                    this.gl, settings.deadColor));
+                    this.gl, settings.deadColor) as Rectangle);
 
                 currentX += this.columnWidth;
             }
@@ -52,7 +52,7 @@ export class Grid
         }
     }
 
-    public get squares(): Array<Shape2d>
+    public get squares(): Array<Rectangle>
     {
         return this.squaresArray;
     }
