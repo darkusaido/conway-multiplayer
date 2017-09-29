@@ -33,10 +33,10 @@ class App extends React.Component<{}, {}>
 
         this.renderer = new WebGLRenderer(canvas, options);
 
-        this.renderer.start();
-
         let grid = new Grid(canvas, this.renderer.gl);
         this.renderer.addHomogenoeusShapesArrayToScene(grid.squares);
+
+        this.renderer.start();
     }
 
     public render()
@@ -61,19 +61,19 @@ class App extends React.Component<{}, {}>
         this.keyHandlers.bind("down", () =>
         {
             const leCamera = this.renderer.camera;
-            leCamera.panY(0.01);
+            leCamera.panY(-0.02);
         });
         this.keyHandlers.bind("up", () => {
             const leCamera = this.renderer.camera;
-            leCamera.panY(-0.01);
+            leCamera.panY(0.02);
         });
         this.keyHandlers.bind("left", () => {
             const leCamera = this.renderer.camera;
-            leCamera.panX(0.01);
+            leCamera.panX(-0.02);
         });
         this.keyHandlers.bind("right", () => {
             const leCamera = this.renderer.camera;
-            leCamera.panX(-0.01);
+            leCamera.panX(0.02);
         });
     }
 }
