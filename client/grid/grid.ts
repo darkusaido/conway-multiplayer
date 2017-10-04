@@ -19,12 +19,12 @@ export class Grid
 
     constructor(canvas: HTMLCanvasElement, gl: WebGLRenderingContext)
     {
-        this.rows = 200;
-        this.columns = 200;
-        this.rowHeight = 0.005;
-        this.columnWidth = 0.005;
-        this.cellHeight = 0.004;
-        this.cellWidth = 0.004;
+        this.rows = 100;
+        this.columns = 100;
+        this.rowHeight = 0.01;
+        this.columnWidth = 0.01;
+        this.cellHeight = 0.008;
+        this.cellWidth = 0.008;
 
         this.squaresArray = new Array<Rectangle>();
         this.gl = gl;
