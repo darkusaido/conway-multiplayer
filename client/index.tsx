@@ -1,18 +1,18 @@
 import * as io from "socket.io-client";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { WebGLRenderer, RenderingOptions, RGBColor } from "webgl-renderer";
+import { WebGL3dRenderer, RenderingOptions, RGBColor } from "webgl-renderer";
 import * as Combokeys from "combokeys";
 
-import { Callbacks } from "./utils/callbacks";
 import { ButtonBar } from "./components/buttonBar";
 import { Grid } from "./grid/grid";
+import { settings } from "./utils/settings";
 
 declare var WebGLDebugUtils: any;
 
 class App extends React.Component<{}, {}>
 {
-    private renderer: WebGLRenderer;
+    private renderer: WebGL3dRenderer;
     private keyHandlers: Combokeys.Combokeys;
 
     constructor()
@@ -24,14 +24,15 @@ class App extends React.Component<{}, {}>
         this.keyHandlers = new Combokeys(document.documentElement);
         this.bindArrowKeys();
 
+        const calcHeight = (newHeight: number) => newHeight - settings.buttonBarHeight;
         let options: RenderingOptions =
         {
             backgroundColor: new RGBColor(0.8, 0.8, 0.8),
             fullscreen: true,
-            resizeCallback: Callbacks.resizeCanvas
+            calcHeight: calcHeight
         };
 
-        this.renderer = new WebGLRenderer(canvas, options);
+        this.renderer = new WebGL3dRenderer(canvas, options);
 
         let grid = new Grid(canvas, this.renderer.gl);
         this.renderer.addHomogenoeusShapesArrayToScene(grid.squares);
